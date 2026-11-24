@@ -21,6 +21,7 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("if command -v awww-daemon >/dev/null 2>&1; then awww-daemon; else swww-daemon; fi")
     hl.exec_cmd("nm-applet")
     hl.exec_cmd("dunst")
+    hl.exec_cmd("command -v gsettings >/dev/null 2>&1 && gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' && gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'")
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
     hl.exec_cmd("~/.config/hypr/scripts/wallpaper-picker --restore")
@@ -33,6 +34,7 @@ end)
 
 hl.env("XCURSOR_SIZE", "16")
 hl.env("HYPRCURSOR_SIZE", "16")
+hl.env("GTK_THEME", "Adwaita:dark")
 
 
 -----------------------

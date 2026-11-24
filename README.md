@@ -59,7 +59,8 @@ The installer walks you through choosing your editor and browser, previews the p
 
 ```text
 dunst/         Notification daemon & OSD bars
-gtk-3.0/       GTK dark theme defaults
+gtk-3.0/       GTK3 dark theme defaults
+gtk-4.0/       GTK4 dark theme defaults
 hypr/          Hyprland config, keybinds, lockscreen & scripts
 kitty/         Terminal configuration
 matugen/       Dynamic color templates
@@ -68,5 +69,6 @@ rofi/          App launcher, clipboard & wallpaper gallery themes
 starship.toml  Minimal single-line prompt
 waybar/        Status bar layout & styling
 wlogout/       Session power menu
+zsh/           Minimal Zsh configuration
 install.sh     Interactive, rollback-safe installer
 ```

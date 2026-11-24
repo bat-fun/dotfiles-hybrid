@@ -22,14 +22,14 @@ SELECTED_EDITOR="kitty -e nvim"
 SELECTED_BROWSER="brave"
 
 CONFIG_PATHS=(
-    dunst gtk-3.0 hypr kitty matugen nvim rofi waybar wlogout starship.toml
+    dunst gtk-3.0 gtk-4.0 hypr kitty matugen nvim rofi waybar wlogout starship.toml
 )
 
 PACKAGES=(
     xdg-desktop-portal
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
-    hyprland hyprlock hyprsunset waybar rofi rofimoji kitty dunst awww
+    hyprland hyprlock hyprsunset waybar rofi rofimoji kitty dunst awww zsh
     networkmanager network-manager-applet nm-connection-editor
     bluez bluez-utils blueman
     pipewire pipewire-pulse wireplumber pavucontrol
@@ -914,6 +914,51 @@ select_preferences() {
     [[ -n "$SELECTED_BROWSER" ]] && success "Browser set to: $SELECTED_BROWSER"
 }
 
+configure_zsh() {
+    local zsh_source="$ROOT_DIR/zsh/.zshrc"
+    local zsh_target="$HOME/.zshrc"
+
+    log "04 // SHELL" "Configuring Zsh."
+    [[ -f "$zsh_source" ]] || {
+        warning "Missing $zsh_source; skipping Zsh config."
+        return 0
+    }
+
+    if [[ -f "$zsh_target" && ! -L "$zsh_target" ]]; then
+        if ! cmp -s "$zsh_source" "$zsh_target"; then
+            cp -a -- "$zsh_target" "${zsh_target}.bak.$(date +%Y%m%d%H%M%S)" &&
+                success "Backed up existing ~/.zshrc"
+        fi
+    fi
+
+    cp -f -- "$zsh_source" "$zsh_target" && success "Installed ~/.zshrc"
+
+    if [[ "$SELECTED_EDITOR" == "code" ]]; then
+        sed -i -E 's|^export EDITOR=.*|export EDITOR="code --wait"|; s|^export VISUAL=.*|export VISUAL="code --wait"|' "$zsh_target"
+    fi
+
+    if command -v zsh >/dev/null 2>&1; then
+        local zsh_bin
+        zsh_bin="$(command -v zsh)"
+        if [[ "${SHELL:-}" != "$zsh_bin" ]]; then
+            if ask "Set Zsh as your default login shell?" yes; then
+                chsh -s "$zsh_bin" && success "Default shell set to $zsh_bin" ||
+                    warning "Could not change login shell; run: chsh -s $zsh_bin"
+            fi
+        else
+            success "Zsh is already your default shell."
+        fi
+    fi
+}
+
+configure_dark_mode() {
+    if command -v gsettings >/dev/null 2>&1; then
+        gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark' 2>/dev/null || true
+        success "Dark mode preference enabled (prefer-dark)."
+    fi
+}
+
 configure_programs() {
     local programs_file="$CONFIG_DIR/hypr/module/programs.lua"
     [[ -f "$programs_file" ]] || return 0
@@ -945,6 +990,8 @@ main() {
     fi
 
     configure_programs
+    configure_dark_mode
+    configure_zsh
     configure_starship_bashrc
     fetch_wallpapers
     choose_wallpaper
