@@ -52,6 +52,8 @@ The installer walks you through choosing your editor and browser, previews the p
 | `SUPER + ALT + N` | Toggle Do Not Disturb |
 | `SUPER + S` | Toggle scratchpad terminal |
 | `SUPER + V` | Clipboard history |
+| `SUPER + .` | Emoji picker (`rofi-emoji`) |
+| `SUPER + =` | Calculator (`rofi-calc`) |
 | `SUPER + L` / `X` | Lock screen / Power menu |
 | `SUPER + Q` | Close window |
 | `PRINT` | Screenshot region |

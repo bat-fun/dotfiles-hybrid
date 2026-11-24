@@ -17,6 +17,7 @@ entries=(
     "SUPER + V             │ Clipboard History"
     "SUPER + SHIFT + V     │ Clear Clipboard History"
     "SUPER + .             │ Emoji Picker"
+    "SUPER + =             │ Calculator (Rofi)"
     "SUPER + F             │ Fullscreen"
     "SUPER + SPACE         │ Toggle Floating"
     "SUPER + Q             │ Close Window"

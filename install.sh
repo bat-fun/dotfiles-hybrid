@@ -29,14 +29,14 @@ PACKAGES=(
     xdg-desktop-portal
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
-    hyprland hyprlock hyprsunset waybar rofi rofimoji kitty dunst awww
+    hyprland hyprlock hyprsunset hyprpolkitagent waybar rofi rofi-emoji rofi-calc kitty dunst awww
     zsh zsh-autosuggestions zsh-syntax-highlighting
     networkmanager network-manager-applet nm-connection-editor
     bluez bluez-utils blueman
     pipewire pipewire-pulse wireplumber pavucontrol
     wl-clipboard cliphist matugen starship
     grim slurp brightnessctl playerctl libnotify
-    dolphin qt6ct python python-pillow
+    dolphin ark unzip 7zip ffmpegthumbs loupe mpv evince qt6ct python python-pillow
     noto-fonts noto-fonts-emoji
     ttf-jetbrains-mono-nerd ttf-font-awesome
     adwaita-icon-theme

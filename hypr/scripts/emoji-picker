@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-command -v rofimoji >/dev/null 2>&1 || {
-    printf 'emoji-picker: missing command: rofimoji\n' >&2
-    exit 1
-}
+if rofi -show emoji -modi emoji -theme ~/.config/rofi/config.rasi >/dev/null 2>&1; then
+    exit 0
+fi
 
-exec rofimoji \
-    --selector rofi \
-    --action clipboard \
-    --max-recent 8 \
-    --prompt 'Emoji '
+if command -v rofimoji >/dev/null 2>&1; then
+    exec rofimoji --selector rofi --action clipboard --max-recent 8 --prompt 'Emoji '
+fi
+
+printf 'emoji-picker: install rofi-emoji (or rofimoji)\n' >&2
+exit 1

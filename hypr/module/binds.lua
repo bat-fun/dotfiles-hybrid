@@ -31,6 +31,7 @@ hl.bind(mainMod .. " + ALT + N", hl.dsp.exec_cmd("~/.config/hypr/scripts/dnd-tog
 hl.bind(mainMod .. " + CTRL + N", hl.dsp.exec_cmd("dunstctl context"))
 
 hl.bind(mainMod .. " + period",hl.dsp.exec_cmd("~/.config/hypr/scripts/emoji-picker"))
+hl.bind(mainMod .. " + equal", hl.dsp.exec_cmd("rofi -show calc -modi calc -no-show-match -no-sort -theme ~/.config/rofi/config.rasi"), { description = "Calculator" })
 
 -- Clipboard
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/clipboard-picker"))
