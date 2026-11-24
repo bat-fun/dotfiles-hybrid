@@ -25,7 +25,7 @@ A clean, distraction-free environment tuned for everyday work: browsing, YouTube
 ## Install
 
 ```bash
-git clone <your-repo-url> ~/dotfiles-hybrid
+git clone https://github.com/bat-fun/dotfiles-hybrid.git
 cd ~/dotfiles-hybrid
 ./install.sh
 ```
