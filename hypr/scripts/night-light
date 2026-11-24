@@ -28,3 +28,5 @@ else
     touch "$STATE_FILE"
     notify -i weather-clear "Reading Mode" "Warm filter active (${WARM_TEMP}K)"
 fi
+
+pkill -RTMIN+8 waybar 2>/dev/null || true

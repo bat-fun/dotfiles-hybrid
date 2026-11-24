@@ -1,53 +1,69 @@
-@import "~/.config/rofi/colors.rasi"
+@import "~/.config/matugen/colors/rofi-colors.rasi"
 
 configuration {
-    modi: "drun";
     show-icons: true;
-    drun-display-format: "{name}";
-    font: "JetBrainsMono Nerd Font 10";
+    hover-select: true;
+    me-select-entry: "";
+    me-accept-entry: "MousePrimary";
+    kb-cancel: "Escape";
+    kb-accept-entry: "Return";
 }
 
 * {
+    bg:          @noir-bg;
+    surface:     @noir-surface;
+    surface-alt: @noir-surface-alt;
+    text:        @noir-text;
+    muted:       @noir-muted;
+    accent:      @noir-accent;
+    outline:     @noir-outline;
+
     background-color: transparent;
-    text-color: @on-surface;
+    text-color: @text;
+    font: "JetBrainsMono Nerd Font 10";
 }
 
 window {
+    transparency: "real";
     width: 64%;
-    height: 48%;
+    height: 52%;
     location: center;
     anchor: center;
-    background-color: @surface;
-    border: 1px solid @outline;
-    border-radius: 12px;
+    background-color: @bg;
+    border: 1px;
+    border-color: @outline;
+    border-radius: 14px;
     padding: 18px;
+    cursor: "default";
 }
 
 mainbox {
     orientation: vertical;
     spacing: 14px;
+    background-color: transparent;
     children: [ inputbar, listview ];
 }
 
 inputbar {
-    background-color: @surface-container;
-    border: 1px solid @outline;
-    border-radius: 8px;
-    padding: 8px 14px;
+    background-color: @surface;
+    border: 1px;
+    border-color: @outline;
+    border-radius: 10px;
+    padding: 9px 14px;
     spacing: 10px;
     children: [ prompt, entry ];
 }
 
 prompt {
-    text-color: @primary;
-    font: "JetBrainsMono Nerd Font 12";
+    text-color: @accent;
+    font: "JetBrainsMono Nerd Font Bold 12";
     vertical-align: 0.5;
 }
 
 entry {
     placeholder: "Search wallpaper...";
-    placeholder-color: @on-surface-variant;
-    text-color: @on-surface;
+    placeholder-color: @muted;
+    text-color: @text;
     vertical-align: 0.5;
 }
 
@@ -59,40 +75,39 @@ listview {
     fixed-height: true;
     fixed-columns: true;
     cycle: true;
+    background-color: transparent;
 }
 
 element {
     orientation: vertical;
     padding: 10px;
     spacing: 8px;
-    border: 1px solid transparent;
+    border: 1px;
+    border-color: transparent;
     border-radius: 10px;
-    background-color: @surface-container;
+    background-color: @surface;
+    cursor: pointer;
 }
 
-element normal.normal {
-    background-color: @surface-container;
-    border-color: transparent;
-    text-color: @on-surface-variant;
-}
-
+element normal.normal,
 element alternate.normal {
-    background-color: @surface-container;
+    background-color: @surface;
     border-color: transparent;
-    text-color: @on-surface-variant;
+    text-color: @muted;
 }
 
 element selected.normal {
-    background-color: @surface-container-high;
-    border-color: @primary;
-    text-color: @on-surface;
+    background-color: @surface-alt;
+    border-color: @accent;
+    text-color: @text;
 }
 
 element-icon {
-    size: 148px;
+    size: 152px;
     horizontal-align: 0.5;
     vertical-align: 0.5;
-    border-radius: 6px;
+    border-radius: 8px;
+    cursor: inherit;
 }
 
 element-text {
@@ -100,4 +115,10 @@ element-text {
     vertical-align: 0.5;
     font: "JetBrainsMono Nerd Font 9.5";
     text-color: inherit;
+    cursor: inherit;
+}
+
+element selected.normal element-text {
+    text-color: @accent;
+    font: "JetBrainsMono Nerd Font Bold 9.5";
 }

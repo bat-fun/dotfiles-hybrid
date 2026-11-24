@@ -3,6 +3,10 @@ set -Eeuo pipefail
 
 ROFI_THEME="$HOME/.config/rofi/control-center.rasi"
 
+refresh_waybar() {
+    pkill -RTMIN+8 waybar 2>/dev/null || true
+}
+
 rofi_menu() {
     local prompt="$1"
     shift
@@ -20,7 +24,7 @@ wifi_status() {
     fi
     local ssid
     ssid="$(nmcli -t -f active,ssid dev wifi 2>/dev/null | awk -F: '$1=="yes"{print $2; exit}')"
-    printf '%s' "${ssid:-On (disconnected)}"
+    printf '%s' "${ssid:-Disconnected}"
 }
 
 bt_status() {
@@ -64,6 +68,24 @@ bright_status() {
     fi
 }
 
+battery_status() {
+    local bat cap stat
+    for bat in /sys/class/power_supply/BAT*; do
+        [[ -d "$bat" ]] || continue
+        cap="$(<"$bat/capacity")"
+        stat="$(<"$bat/status")"
+        if [[ "$stat" == "Charging" ]]; then
+            printf '%s%% (Charging)' "$cap"
+        elif [[ "$stat" == "Full" ]]; then
+            printf '%s%% (Full)' "$cap"
+        else
+            printf '%s%%' "$cap"
+        fi
+        return 0
+    done
+    return 1
+}
+
 night_status() {
     pgrep -x hyprsunset >/dev/null 2>&1 && printf 'On' || printf 'Off'
 }
@@ -76,13 +98,56 @@ dnd_status() {
     fi
 }
 
+notif_history_count() {
+    if command -v dunstctl >/dev/null 2>&1; then
+        dunstctl count history 2>/dev/null || printf '0'
+    else
+        printf '0'
+    fi
+}
+
+json_escape() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    printf '%s' "$s"
+}
+
+print_waybar_status() {
+    local wifi bt vol bright night dnd bat tooltip cls="normal"
+    wifi="$(wifi_status)"
+    bt="$(bt_status)"
+    vol="$(vol_status)"
+    bright="$(bright_status)"
+    night="$(night_status)"
+    dnd="$(dnd_status)"
+
+    tooltip="Quick Settings"$'\n'
+    tooltip+="Wi-Fi: ${wifi}"$'\n'
+    tooltip+="Bluetooth: ${bt}"$'\n'
+    tooltip+="Volume: ${vol}  ·  Brightness: ${bright}"$'\n'
+    if bat="$(battery_status 2>/dev/null)"; then
+        tooltip+="Battery: ${bat}"$'\n'
+    fi
+    tooltip+="Night Light: ${night}  ·  DND: ${dnd}"$'\n'
+    tooltip+=$'\n'"Click: Quick Settings  ·  Right-click: DND"
+
+    if [[ "$dnd" == "On" ]]; then
+        cls="dnd"
+    fi
+
+    printf '{"text":"󰒓","tooltip":"%s","class":"%s"}\n' \
+        "$(json_escape "$tooltip")" "$cls"
+}
+
 wifi_menu() {
     command -v nmcli >/dev/null 2>&1 || return 0
     local state toggle_label choice
     state="$(nmcli radio wifi 2>/dev/null || printf 'disabled')"
     toggle_label=$([[ "$state" == "enabled" ]] && echo "󰤮  Turn Wi-Fi Off" || echo "󰤨  Turn Wi-Fi On")
 
-    local -a items=("←  Back" "$toggle_label")
+    local -a items=("←  Back" "$toggle_label" "󰒓  Network Editor")
     if [[ "$state" == "enabled" ]]; then
         while IFS= read -r line; do
             [[ -n "$line" ]] && items+=("󰤨  $line")
@@ -92,12 +157,14 @@ wifi_menu() {
     choice="$(rofi_menu "󰤨 " "${items[@]}")"
     case "$choice" in
         ""|"←  Back") return 0 ;;
-        "󰤮  Turn Wi-Fi Off") nmcli radio wifi off ;;
-        "󰤨  Turn Wi-Fi On") nmcli radio wifi on ;;
+        "󰤮  Turn Wi-Fi Off") nmcli radio wifi off; refresh_waybar ;;
+        "󰤨  Turn Wi-Fi On") nmcli radio wifi on; refresh_waybar ;;
+        "󰒓  Network Editor") nm-connection-editor >/dev/null 2>&1 & ;;
         󰤨*)
             local ssid="${choice#󰤨  }"
             ssid="${ssid% (*}"
             nmcli dev wifi connect "$ssid" >/dev/null 2>&1 || nm-connection-editor >/dev/null 2>&1 &
+            refresh_waybar
             ;;
     esac
 }
@@ -118,8 +185,8 @@ bluetooth_menu() {
     choice="$(rofi_menu "󰂯 " "${items[@]}")"
     case "$choice" in
         ""|"←  Back") return 0 ;;
-        "󰂲  Turn Bluetooth Off") bluetoothctl power off >/dev/null ;;
-        "󰂯  Turn Bluetooth On") bluetoothctl power on >/dev/null ;;
+        "󰂲  Turn Bluetooth Off") bluetoothctl power off >/dev/null; refresh_waybar ;;
+        "󰂯  Turn Bluetooth On") bluetoothctl power on >/dev/null; refresh_waybar ;;
         "󰂱  Open Bluetooth Manager") blueman-manager >/dev/null 2>&1 & ;;
         󰂯*)
             local mac="${choice#󰂯  }"
@@ -129,6 +196,7 @@ bluetooth_menu() {
             else
                 bluetoothctl connect "$mac" >/dev/null || true
             fi
+            refresh_waybar
             ;;
     esac
 }
@@ -140,17 +208,22 @@ volume_menu() {
         "󰝟  Toggle Mute" \
         "󰕾  Volume +10%" \
         "󰖀  Volume -10%" \
+        "󰕾  Volume 25%" \
         "󰕾  Volume 50%" \
+        "󰕾  Volume 75%" \
         "󰕾  Volume 100%" \
         "󰒓  Open Audio Mixer")"
     case "$choice" in
         "󰝟  Toggle Mute") ~/.config/hypr/scripts/osd volume mute ;;
         "󰕾  Volume +10%") ~/.config/hypr/scripts/osd volume up ;;
         "󰖀  Volume -10%") ~/.config/hypr/scripts/osd volume down ;;
+        "󰕾  Volume 25%") wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.25 ;;
         "󰕾  Volume 50%") wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.50 ;;
+        "󰕾  Volume 75%") wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.75 ;;
         "󰕾  Volume 100%") wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.00 ;;
         "󰒓  Open Audio Mixer") pavucontrol >/dev/null 2>&1 & ;;
     esac
+    refresh_waybar
 }
 
 brightness_menu() {
@@ -172,24 +245,67 @@ brightness_menu() {
         "󰃟  75%") brightnessctl set 75% >/dev/null ;;
         "󰃠  100%") brightnessctl set 100% >/dev/null ;;
     esac
+    refresh_waybar
+}
+
+notifications_menu() {
+    command -v dunstctl >/dev/null 2>&1 || return 0
+    local choice dnd_label
+    dnd_label=$([[ "$(dnd_status)" == "On" ]] && echo "󰂚  Resume Notifications" || echo "󰂛  Enable Do Not Disturb")
+
+    choice="$(rofi_menu "󰂚 " \
+        "←  Back" \
+        "$dnd_label" \
+        "󰍉  Show Last Notification" \
+        "󰎟  Dismiss Visible Notifications" \
+        "󰃢  Clear Notification History")"
+    case "$choice" in
+        "󰂚  Resume Notifications"|"󰂛  Enable Do Not Disturb")
+            ~/.config/hypr/scripts/dnd-toggle
+            ;;
+        "󰍉  Show Last Notification")
+            dunstctl history-pop 2>/dev/null || true
+            ;;
+        "󰎟  Dismiss Visible Notifications")
+            dunstctl close-all 2>/dev/null || true
+            ;;
+        "󰃢  Clear Notification History")
+            dunstctl history-clear 2>/dev/null || true
+            ;;
+    esac
+    refresh_waybar
 }
 
 case "${1:-}" in
+    --status) print_waybar_status; exit 0 ;;
     --wifi) wifi_menu; exit 0 ;;
     --bluetooth) bluetooth_menu; exit 0 ;;
     --volume) volume_menu; exit 0 ;;
     --brightness) brightness_menu; exit 0 ;;
+    --notifications) notifications_menu; exit 0 ;;
 esac
 
 while true; do
-    choice="$(rofi_menu "󰒓 " \
-        "󰤨  Wi-Fi          ·  $(wifi_status)" \
-        "󰂯  Bluetooth      ·  $(bt_status)" \
-        "󰕾  Volume         ·  $(vol_status)" \
-        "󰃟  Brightness     ·  $(bright_status)" \
-        "󰖔  Night Light    ·  $(night_status)" \
-        "󰂛  Do Not Disturb ·  $(dnd_status)" \
-        "󰐥  Power Menu")"
+    menu_items=(
+        "󰤨  Wi-Fi          ·  $(wifi_status)"
+        "󰂯  Bluetooth      ·  $(bt_status)"
+        "󰕾  Volume         ·  $(vol_status)"
+        "󰃟  Brightness     ·  $(bright_status)"
+        "󰖔  Night Light    ·  $(night_status)"
+        "󰂛  Do Not Disturb ·  $(dnd_status)"
+        "󰂚  Notifications  ·  $(notif_history_count) saved"
+    )
+
+    if bat="$(battery_status 2>/dev/null)"; then
+        menu_items+=("󰁹  Battery        ·  ${bat}")
+    fi
+
+    menu_items+=(
+        "󰸉  Wallpaper      ·  Gallery"
+        "󰐥  Power Menu"
+    )
+
+    choice="$(rofi_menu "󰒓 " "${menu_items[@]}")"
 
     [[ -z "$choice" ]] && break
 
@@ -200,6 +316,8 @@ while true; do
         󰃟*) brightness_menu ;;
         󰖔*) ~/.config/hypr/scripts/night-light ;;
         󰂛*) ~/.config/hypr/scripts/dnd-toggle ;;
+        󰂚*) notifications_menu ;;
+        󰸉*) ~/.config/hypr/scripts/wallpaper-picker >/dev/null 2>&1 & break ;;
         󰐥*) wlogout >/dev/null 2>&1 & break ;;
     esac
 done

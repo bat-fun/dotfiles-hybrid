@@ -2,46 +2,52 @@
     monitor = 0
     follow = mouse
     origin = top-right
-    offset = (12, 44)
-    width = (280, 360)
-    height = (0, 300)
+    offset = (8, 48)
+    width = (300, 380)
+    height = (0, 320)
     notification_limit = 4
-    gap_size = 6
+    gap_size = 8
 
     # Progress bar (volume/brightness visual feedback)
     progress_bar = true
-    progress_bar_height = 6
+    progress_bar_height = 8
     progress_bar_frame_width = 0
-    progress_bar_min_width = 160
-    progress_bar_max_width = 300
-    progress_bar_corner_radius = 3
+    progress_bar_min_width = 200
+    progress_bar_max_width = 340
+    progress_bar_corner_radius = 4
+    progress_bar_corners = all
 
     indicate_hidden = yes
     transparency = 0
-    separator_height = 1
-    padding = 10
-    horizontal_padding = 12
-    text_icon_padding = 10
+    separator_height = 2
+    padding = 14
+    horizontal_padding = 16
+    text_icon_padding = 14
     frame_width = 1
     separator_color = frame
-    corner_radius = 8
+    corner_radius = 12
     sort = urgency_descending
     idle_threshold = 120
 
     # Typography & Hierarchy
     font = JetBrainsMono Nerd Font 10.5
-    line_height = 2
+    line_height = 3
     markup = full
-    format = "<b>%s</b>\n%b"
+    format = "<b>%s</b>\n<span alpha='85%'>%b</span>"
+    alignment = left
+    vertical_alignment = center
     show_age_threshold = 60
+    ellipsize = end
+    word_wrap = yes
     stack_duplicates = true
     hide_duplicate_count = false
     show_indicators = yes
 
     # Icons
     icon_position = left
-    min_icon_size = 32
-    max_icon_size = 42
+    min_icon_size = 36
+    max_icon_size = 48
+    icon_corner_radius = 8
     icon_theme = breeze-dark, Adwaita
     enable_recursive_icon_lookup = true
 
@@ -62,9 +68,9 @@
     timeout = 4
 
 [urgency_normal]
-    background = "#2a2a29"
+    background = "#201f1f"
     foreground = "#e5e2e0"
-    frame_color = "#c7c7bc"
+    frame_color = "#464741"
     highlight = "#c7c7bc"
     timeout = 6
 
@@ -77,12 +83,12 @@
 
 # ── RULES FOR CLEAN & USEFUL NOTIFICATIONS ─────────────
 [volume]
-    summary = "*volume*"
+    summary = "*Volume*"
     set_stack_tag = "volume"
     history_ignore = true
 
 [brightness]
-    summary = "*brightness*"
+    summary = "*Brightness*"
     set_stack_tag = "brightness"
     history_ignore = true
 
