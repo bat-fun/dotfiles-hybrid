@@ -1,0 +1,103 @@
+@import "~/.config/rofi/colors.rasi"
+
+configuration {
+    modi: "drun";
+    show-icons: true;
+    drun-display-format: "{name}";
+    font: "JetBrainsMono Nerd Font 10";
+}
+
+* {
+    background-color: transparent;
+    text-color: @on-surface;
+}
+
+window {
+    width: 64%;
+    height: 48%;
+    location: center;
+    anchor: center;
+    background-color: @surface;
+    border: 1px solid @outline;
+    border-radius: 12px;
+    padding: 18px;
+}
+
+mainbox {
+    orientation: vertical;
+    spacing: 14px;
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    background-color: @surface-container;
+    border: 1px solid @outline;
+    border-radius: 8px;
+    padding: 8px 14px;
+    spacing: 10px;
+    children: [ prompt, entry ];
+}
+
+prompt {
+    text-color: @primary;
+    font: "JetBrainsMono Nerd Font 12";
+    vertical-align: 0.5;
+}
+
+entry {
+    placeholder: "Search wallpaper...";
+    placeholder-color: @on-surface-variant;
+    text-color: @on-surface;
+    vertical-align: 0.5;
+}
+
+listview {
+    columns: 3;
+    lines: 2;
+    spacing: 14px;
+    scrollbar: false;
+    fixed-height: true;
+    fixed-columns: true;
+    cycle: true;
+}
+
+element {
+    orientation: vertical;
+    padding: 10px;
+    spacing: 8px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background-color: @surface-container;
+}
+
+element normal.normal {
+    background-color: @surface-container;
+    border-color: transparent;
+    text-color: @on-surface-variant;
+}
+
+element alternate.normal {
+    background-color: @surface-container;
+    border-color: transparent;
+    text-color: @on-surface-variant;
+}
+
+element selected.normal {
+    background-color: @surface-container-high;
+    border-color: @primary;
+    text-color: @on-surface;
+}
+
+element-icon {
+    size: 148px;
+    horizontal-align: 0.5;
+    vertical-align: 0.5;
+    border-radius: 6px;
+}
+
+element-text {
+    horizontal-align: 0.5;
+    vertical-align: 0.5;
+    font: "JetBrainsMono Nerd Font 9.5";
+    text-color: inherit;
+}

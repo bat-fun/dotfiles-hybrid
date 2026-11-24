@@ -1,0 +1,16 @@
+:root {
+    --bg: #141312;
+    --surface: #0e0e0d;
+    --surface-alt: #2a2a29;
+
+    --text: #e5e2e0;
+    --muted: #c7c7be;
+
+    --accent: #c7c7bc;
+    --secondary: #c8c6c1;
+    --tertiary: #d0c3c9;
+
+    --danger: #ffb4ab;
+    --outline: #919189;
+    --signal: #2c2e26;
+}

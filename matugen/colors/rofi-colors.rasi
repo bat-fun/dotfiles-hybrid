@@ -1,0 +1,14 @@
+* {
+    noir-accent: #c7c7bc;
+    noir-secondary: #c8c6c1;
+    noir-tertiary: #d0c3c9;
+    noir-muted: #c7c7be;
+    noir-outline: #919189;
+    noir-danger: #ffb4ab;
+
+    noir-bg: #141312;
+    noir-surface: #0e0e0d;
+    noir-surface-alt: #2a2a29;
+    noir-text: #e5e2e0;
+    noir-signal: #2c2e26;
+}

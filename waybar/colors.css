@@ -1,0 +1,15 @@
+@define-color bg #141312;
+@define-color surface #0e0e0d;
+@define-color surface_alt #2a2a29;
+@define-color surface2 #201f1f;
+
+@define-color text #e5e2e0;
+@define-color muted #c7c7be;
+
+@define-color accent #c7c7bc;
+@define-color secondary #c8c6c1;
+@define-color tertiary #d0c3c9;
+
+@define-color danger #ffb4ab;
+@define-color outline #464741;
+@define-color signal #2c2e26;

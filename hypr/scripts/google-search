@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+resolve_browser() {
+    local lua_file="$HOME/.config/hypr/module/programs.lua"
+    if [[ -r "$lua_file" ]]; then
+        local configured
+        configured=$(sed -nE 's/^[[:space:]]*browser[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/p' "$lua_file" | head -n 1)
+        if [[ -n "$configured" ]] && command -v "${configured%% *}" >/dev/null 2>&1; then
+            printf '%s\n' "$configured"
+            return 0
+        fi
+    fi
+
+    local candidate
+    for candidate in brave firefox chromium zen-browser xdg-open; do
+        if command -v "$candidate" >/dev/null 2>&1; then
+            printf '%s\n' "$candidate"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+query=$(rofi -dmenu -i -p "󰍉 " \
+    -theme ~/.config/rofi/config.rasi)
+
+[ -z "$query" ] && exit 0
+
+if ! command -v python >/dev/null 2>&1; then
+    printf 'google-search: missing command: python\n' >&2
+    exit 1
+fi
+
+browser=$(resolve_browser) || {
+    printf 'google-search: no supported browser found\n' >&2
+    exit 1
+}
+
+if [[ "$query" == yt\ * ]]; then
+    yt_query="${query#yt }"
+    encoded=$(python -c 'from urllib.parse import quote_plus; import sys; print(quote_plus(sys.argv[1]))' "$yt_query")
+    # shellcheck disable=SC2086
+    exec $browser "https://www.youtube.com/results?search_query=$encoded"
+fi
+
+encoded_query=$(python -c 'from urllib.parse import quote_plus; import sys; print(quote_plus(sys.argv[1]))' "$query")
+# shellcheck disable=SC2086
+exec $browser "https://www.google.com/search?q=$encoded_query"

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+# Toggle warm reading temperature via hyprsunset
+
+STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/knight-night-light"
+WARM_TEMP=4200
+
+notify() {
+    command -v notify-send >/dev/null 2>&1 && notify-send \
+        -a "System" \
+        -h string:x-dunst-stack-tag:night-light \
+        -t 1500 \
+        "$@" || true
+}
+
+if ! command -v hyprsunset >/dev/null 2>&1; then
+    notify "Reading Mode" "Install hyprsunset to toggle blue-light filter"
+    exit 1
+fi
+
+if pgrep -x hyprsunset >/dev/null 2>&1 || [[ -f "$STATE_FILE" ]]; then
+    pkill -x hyprsunset 2>/dev/null || true
+    rm -f -- "$STATE_FILE"
+    notify -i weather-clear-night "Reading Mode" "Off (6500K)"
+else
+    hyprsunset -t "$WARM_TEMP" >/dev/null 2>&1 &
+    touch "$STATE_FILE"
+    notify -i weather-clear "Reading Mode" "Warm filter active (${WARM_TEMP}K)"
+fi
