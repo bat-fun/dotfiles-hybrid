@@ -24,7 +24,8 @@ resolve_browser() {
 }
 
 query=$(rofi -dmenu -i -p "󰍉 " \
-    -theme ~/.config/rofi/config.rasi)
+    -theme ~/.config/rofi/config.rasi \
+    -theme-str 'listview { enabled: false; } entry { placeholder: "Search Google or yt <query>..."; }' || true)
 
 [ -z "$query" ] && exit 0
 

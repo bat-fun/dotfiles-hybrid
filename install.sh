@@ -77,20 +77,34 @@ fi
 banner() {
     clear 2>/dev/null || true
     printf '\n'
-    printf '%b' "$ACCENT"
-    cat <<'EOF'
-   ╦╔═╔╗╔╦╔═╗╦ ╦╔╦╗   ╦═╗╦╔═╗╔═╗
-   ╠╩╗║║║║║ ╦╠═╣ ║ ───╠╦╝║║  ║╣ 
-   ╩ ╩╝╚╝╩╚═╝╩ ╩ ╩    ╩╚═╩╚═╝╚═╝
-EOF
-    printf '%b' "$RESET"
-    printf '   %bMinimal · Daily-Driven · Distraction-Free%b\n' "$STEEL" "$RESET"
-    printf '   %bArch Linux  ·  Hyprland  ·  Wayland%b\n' "$DIM" "$RESET"
-    printf '   %b────────────────────────────────────────────────────────%b\n' "$DIM" "$RESET"
+    printf '  %b╭────────────────────────────────────────────────────────────╮%b\n' "$DIM" "$RESET"
+    printf '  %b│%b                                                            %b│%b\n' "$DIM" "$RESET" "$DIM" "$RESET"
+    printf '  %b│%b  %b╦╔═╔╗╔╦╔═╗╦ ╦╔╦╗   ╦═╗╦╔═╗╔═╗%b                             %b│%b\n' "$DIM" "$RESET" "$ACCENT" "$RESET" "$DIM" "$RESET"
+    printf '  %b│%b  %b╠╩╗║║║║║ ╦╠═╣ ║ ───╠╦╝║║  ║╣ %b   %bObsidian · Steel · Focus%b  %b│%b\n' "$DIM" "$RESET" "$ACCENT" "$RESET" "$STEEL" "$RESET" "$DIM" "$RESET"
+    printf '  %b│%b  %b╩ ╩╝╚╝╩╚═╝╩ ╩ ╩    ╩╚═╩╚═╝╚═╝%b                             %b│%b\n' "$DIM" "$RESET" "$ACCENT" "$RESET" "$DIM" "$RESET"
+    printf '  %b│%b                                                            %b│%b\n' "$DIM" "$RESET" "$DIM" "$RESET"
+    printf '  %b│%b  %bArch Linux%b  %b·%b  %bHyprland%b  %b·%b  %bWaybar%b  %b·%b  %bMatugen%b           %b│%b\n' \
+        "$DIM" "$RESET" "$BOLD" "$RESET" "$DIM" "$RESET" "$BOLD" "$RESET" "$DIM" "$RESET" "$BOLD" "$RESET" "$DIM" "$RESET" "$BOLD" "$RESET" "$DIM" "$RESET"
+    printf '  %b╰────────────────────────────────────────────────────────────╯%b\n' "$DIM" "$RESET"
+}
+
+ui_card_top() {
+    local title="$1"
+    printf '\n  %b╭─ %b%s%b %b──────────────────────────────────────────╮%b\n' "$DIM" "$ACCENT" "$title" "$RESET" "$DIM" "$RESET"
+}
+
+ui_card_row() {
+    local label="$1"
+    local value="$2"
+    printf '  %b│%b  %b%-12s%b %b%s%b\n' "$DIM" "$RESET" "$STEEL" "$label" "$RESET" "$BOLD" "$value" "$RESET"
+}
+
+ui_card_bottom() {
+    printf '  %b╰──────────────────────────────────────────────────────────╯%b\n' "$DIM" "$RESET"
 }
 
 log() {
-    printf '\n  %b◆%b %b%s%b  %b%s%b\n' "$ACCENT" "$RESET" "$BOLD" "$1" "$RESET" "$STEEL" "$2" "$RESET"
+    printf '\n  %b[%s]%b %b%s%b\n' "$ACCENT" "$1" "$RESET" "$STEEL" "$2" "$RESET"
 }
 
 success() {
@@ -119,7 +133,7 @@ ask() {
     [[ "$default" == yes ]] && hint="Y/n"
 
     while true; do
-        printf '    %b▸%b %s %b[%s]%b ' "$ACCENT" "$RESET" "$prompt" "$DIM" "$hint" "$RESET"
+        printf '\n    %b▸%b %b%s%b %b[%s]%b ' "$ACCENT" "$RESET" "$BOLD" "$prompt" "$RESET" "$DIM" "$hint" "$RESET"
         if ! read -r answer; then
             return 1
         fi
@@ -816,34 +830,36 @@ start_awww() {
 }
 
 finish() {
-    printf '\n   %b────────────────────────────────────────────────────────%b\n' "$DIM" "$RESET"
-    log "COMPLETE" "knight-rice is ready."
-
-    success "Configs deployed to $CONFIG_DIR"
-    success "Wallpapers in $WALLPAPER_DIR"
-    success "Editor: $SELECTED_EDITOR"
-    [[ -n "$SELECTED_BROWSER" ]] && success "Browser: $SELECTED_BROWSER"
-    [[ -z "$BACKUP_DIR" ]] || success "Backup saved: $BACKUP_DIR"
+    ui_card_top "KNIGHT-RICE READY"
+    ui_card_row "Configs" "$CONFIG_DIR"
+    ui_card_row "Wallpapers" "$WALLPAPER_DIR"
+    ui_card_row "Editor" "$SELECTED_EDITOR"
+    [[ -n "$SELECTED_BROWSER" ]] && ui_card_row "Browser" "$SELECTED_BROWSER"
+    [[ -z "$BACKUP_DIR" ]] || ui_card_row "Backup" "$BACKUP_DIR"
+    ui_card_bottom
 
     printf '\n  %bQUICK START%b\n' "$BOLD" "$RESET"
-    printf '    %bSUPER + Return%b   Terminal (Kitty)\n' "$ACCENT" "$RESET"
-    printf '    %bSUPER + A%b        App Launcher (Rofi)\n' "$ACCENT" "$RESET"
-    printf '    %bSUPER + W%b        Wallpaper Gallery\n' "$ACCENT" "$RESET"
-    printf '    %bSUPER + K%b        Keybind Cheatsheet\n' "$ACCENT" "$RESET"
-    printf '    %bSUPER + G%b        Web / YouTube Search\n' "$ACCENT" "$RESET"
-    printf '    %bSUPER + ALT + R%b  Warm Reading Mode\n' "$ACCENT" "$RESET"
-    printf '    %bSUPER + ALT + N%b  Do Not Disturb\n' "$ACCENT" "$RESET"
-    printf '    %bSUPER + V%b        Clipboard History\n' "$ACCENT" "$RESET"
+    printf '    %b%-18s%b %s\n' "$ACCENT" "SUPER + Return" "$RESET" "Terminal (Kitty)"
+    printf '    %b%-18s%b %s\n' "$ACCENT" "SUPER + A" "$RESET" "App Launcher (Rofi)"
+    printf '    %b%-18s%b %s\n' "$ACCENT" "SUPER + W / R" "$RESET" "Wallpaper Gallery / Random"
+    printf '    %b%-18s%b %s\n' "$ACCENT" "SUPER + K" "$RESET" "Keybind Cheatsheet"
+    printf '    %b%-18s%b %s\n' "$ACCENT" "SUPER + G" "$RESET" "Google / YouTube Search"
+    printf '    %b%-18s%b %s\n' "$ACCENT" "SUPER + ALT + R" "$RESET" "Warm Reading Mode"
+    printf '    %b%-18s%b %s\n' "$ACCENT" "SUPER + ALT + N" "$RESET" "Do Not Disturb"
+    printf '    %b%-18s%b %s\n' "$ACCENT" "SUPER + V" "$RESET" "Clipboard History"
+    printf '    %b%-18s%b %s\n' "$ACCENT" "Waybar 󰒓" "$RESET" "GNOME-style Quick Settings"
     printf '\n  %bLog out and back into Hyprland if needed. Enjoy the focus.%b\n\n' "$STEEL" "$RESET"
 }
 
 show_plan() {
     log "02 // INSTALL PLAN" "Review your configuration before making changes."
-    printf '    %bEditor:%b     %s\n' "$STEEL" "$RESET" "$SELECTED_EDITOR"
-    printf '    %bBrowser:%b    %s\n' "$STEEL" "$RESET" "${SELECTED_BROWSER:-keep existing}"
-    printf '    %bConfig:%b     %s\n' "$STEEL" "$RESET" "$CONFIG_DIR"
-    printf '    %bWallpapers:%b %s\n' "$STEEL" "$RESET" "$WALLPAPER_DIR"
-    printf '    %bSafety:%b     Automatic backup & atomic rollback on failure\n' "$STEEL" "$RESET"
+    ui_card_top "DEPLOYMENT SUMMARY"
+    ui_card_row "Editor" "$SELECTED_EDITOR"
+    ui_card_row "Browser" "${SELECTED_BROWSER:-keep existing}"
+    ui_card_row "Config" "$CONFIG_DIR"
+    ui_card_row "Wallpapers" "$WALLPAPER_DIR"
+    ui_card_row "Safety" "Automatic backup + atomic rollback"
+    ui_card_bottom
 
     ask "Proceed with installation?" yes || {
         warning "Installation cancelled cleanly. No system changes were made."
@@ -856,12 +872,13 @@ select_preferences() {
 
     log "01 // PREFERENCES" "Choose your primary editor and browser."
 
-    printf '\n  EDITOR\n'
-    printf '    1) Neovim (terminal-native, minimal)\n'
-    printf '    2) VS Code (Code - OSS)\n'
-    printf '    3) Both (Neovim as primary)\n'
-    printf '    4) Both (VS Code as primary)\n'
-    read -r -p '  Select editor [1]: ' editor_choice || editor_choice=1
+    printf '\n  %bEDITOR%b\n' "$BOLD" "$RESET"
+    printf '    %b1)%b Neovim %b(terminal-native, recommended)%b\n' "$ACCENT" "$RESET" "$DIM" "$RESET"
+    printf '    %b2)%b VS Code %b(Code - OSS)%b\n' "$ACCENT" "$RESET" "$DIM" "$RESET"
+    printf '    %b3)%b Both %b(Neovim primary)%b\n' "$ACCENT" "$RESET" "$DIM" "$RESET"
+    printf '    %b4)%b Both %b(VS Code primary)%b\n' "$ACCENT" "$RESET" "$DIM" "$RESET"
+    printf '    %b▸%b Select editor %b[1]%b: ' "$ACCENT" "$RESET" "$DIM" "$RESET"
+    read -r editor_choice || editor_choice=1
     editor_choice="${editor_choice:-1}"
 
     case "$editor_choice" in
@@ -884,13 +901,14 @@ select_preferences() {
     esac
     success "Editor set to: $SELECTED_EDITOR"
 
-    printf '\n  BROWSER\n'
-    printf '    1) Brave (AUR: brave-bin)\n'
-    printf '    2) Firefox\n'
-    printf '    3) Chromium\n'
-    printf '    4) Zen Browser (AUR: zen-browser-bin)\n'
-    printf '    5) Skip browser install\n'
-    read -r -p '  Select browser [1]: ' browser_choice || browser_choice=1
+    printf '\n  %bBROWSER%b\n' "$BOLD" "$RESET"
+    printf '    %b1)%b Brave %b(AUR: brave-bin, recommended)%b\n' "$ACCENT" "$RESET" "$DIM" "$RESET"
+    printf '    %b2)%b Firefox\n' "$ACCENT" "$RESET"
+    printf '    %b3)%b Chromium\n' "$ACCENT" "$RESET"
+    printf '    %b4)%b Zen Browser %b(AUR: zen-browser-bin)%b\n' "$ACCENT" "$RESET" "$DIM" "$RESET"
+    printf '    %b5)%b Skip browser install\n' "$ACCENT" "$RESET"
+    printf '    %b▸%b Select browser %b[1]%b: ' "$ACCENT" "$RESET" "$DIM" "$RESET"
+    read -r browser_choice || browser_choice=1
     browser_choice="${browser_choice:-1}"
 
     case "$browser_choice" in

@@ -47,7 +47,7 @@ window {
     enabled: true;
     border: 1px;
     border-color: @noir-outline;
-    border-radius: 10px;
+    border-radius: 14px;
     background-color: @bg;
     padding: 12px 14px;
     cursor: "default";

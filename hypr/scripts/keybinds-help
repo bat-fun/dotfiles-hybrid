@@ -28,4 +28,6 @@ entries=(
     "SHIFT + PRINT         │ Screenshot Fullscreen"
 )
 
-printf '%s\n' "${entries[@]}" | rofi -dmenu -i -p "󰌌 " -theme ~/.config/rofi/config.rasi >/dev/null || true
+printf '%s\n' "${entries[@]}" | rofi -dmenu -i -p "󰌌 " \
+    -theme ~/.config/rofi/config.rasi \
+    -theme-str 'window { width: 580px; } listview { lines: 10; } entry { placeholder: "Filter keybinds..."; }' >/dev/null || true
