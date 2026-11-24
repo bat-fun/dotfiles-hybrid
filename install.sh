@@ -60,42 +60,48 @@ declare -a MISSING_PACKAGES=()
 declare -a MISSING_AUR=()
 
 if [[ -t 1 ]]; then
+    ACCENT='\033[1;38;5;146m'
+    STEEL='\033[38;5;246m'
+    BOLD='\033[1;38;5;255m'
+    DIM='\033[38;5;242m'
     RED='\033[1;38;5;203m'
     GREEN='\033[1;38;5;114m'
     YELLOW='\033[1;38;5;221m'
     BLUE='\033[1;38;5;117m'
     RESET='\033[0m'
 else
-    RED='' GREEN='' YELLOW='' BLUE='' RESET=''
+    ACCENT='' STEEL='' BOLD='' DIM='' RED='' GREEN='' YELLOW='' BLUE='' RESET=''
 fi
 
 banner() {
-    printf '\n%b' "$RED"
+    clear 2>/dev/null || true
+    printf '\n'
+    printf '%b' "$ACCENT"
     cat <<'EOF'
-      _   _  ___  ___ ___
-     | \ | |/ _ \|_ _| _ \
-     |  \| | (_) || ||   /
-     |_\__\___/|___|_|_\
+   ╦╔═╔╗╔╦╔═╗╦ ╦╔╦╗   ╦═╗╦╔═╗╔═╗
+   ╠╩╗║║║║║ ╦╠═╣ ║ ───╠╦╝║║  ║╣ 
+   ╩ ╩╝╚╝╩╚═╝╩ ╩ ╩    ╩╚═╩╚═╝╚═╝
 EOF
     printf '%b' "$RESET"
-    printf '  DOTFILES INSTALLER\n'
-    printf '  ARCH LINUX // HYPRLAND // WAYLAND\n\n'
+    printf '   %bMinimal · Daily-Driven · Distraction-Free%b\n' "$STEEL" "$RESET"
+    printf '   %bArch Linux  ·  Hyprland  ·  Wayland%b\n' "$DIM" "$RESET"
+    printf '   %b────────────────────────────────────────────────────────%b\n' "$DIM" "$RESET"
 }
 
 log() {
-    printf '\n%b[ %s ]%b %s\n' "$BLUE" "$1" "$RESET" "$2"
+    printf '\n  %b◆%b %b%s%b  %b%s%b\n' "$ACCENT" "$RESET" "$BOLD" "$1" "$RESET" "$STEEL" "$2" "$RESET"
 }
 
 success() {
-    printf '  %b[+]%b %s\n' "$GREEN" "$RESET" "$1"
+    printf '    %b✓%b %s\n' "$GREEN" "$RESET" "$1"
 }
 
 warning() {
-    printf '  %b[!]%b %s\n' "$YELLOW" "$RESET" "$1"
+    printf '    %b!%b %s\n' "$YELLOW" "$RESET" "$1"
 }
 
 error() {
-    printf '\n%b[ERROR]%b %s\n' "$RED" "$RESET" "$*" >&2
+    printf '\n    %b✗ ERROR:%b %s\n' "$RED" "$RESET" "$*" >&2
 }
 
 die() {
@@ -112,7 +118,8 @@ ask() {
     [[ "$default" == yes ]] && hint="Y/n"
 
     while true; do
-        if ! read -r -p "  $prompt [$hint] " answer; then
+        printf '    %b▸%b %s %b[%s]%b ' "$ACCENT" "$RESET" "$prompt" "$DIM" "$hint" "$RESET"
+        if ! read -r answer; then
             return 1
         fi
 
@@ -125,7 +132,7 @@ ask() {
                 ;;
             y|yes) return 0 ;;
             n|no) return 1 ;;
-            *) printf '  Enter y or n.\n' ;;
+            *) printf '      %bPlease enter y or n.%b\n' "$DIM" "$RESET" ;;
         esac
     done
 }
@@ -283,7 +290,7 @@ validate_environment() {
 
     # Keep the lock file in the user's data directory. Do not delete it after
     # unlocking: removing a lock file can create races between concurrent runs.
-    exec {INSTALL_LOCK_FD}>"$DATA_DIR/.noir-installer.lock" ||
+    exec {INSTALL_LOCK_FD}>"$DATA_DIR/.knight-rice-installer.lock" ||
         die "Could not open installer lock file."
 
     flock -n "$INSTALL_LOCK_FD" ||
@@ -341,7 +348,7 @@ install_yay() {
 
     sudo pacman -S --needed base-devel git
 
-    BUILD_DIR="$(mktemp -d -- "${TMPDIR:-/tmp}/noir-yay.XXXXXXXX")" ||
+    BUILD_DIR="$(mktemp -d -- "${TMPDIR:-/tmp}/knight-rice-yay.XXXXXXXX")" ||
         die "Could not create yay build directory."
 
     git clone --depth 1 \
@@ -459,7 +466,7 @@ install_configs() {
         fi
     done
 
-    STAGE_DIR="$(mktemp -d -- "$CONFIG_DIR/.noir-install.XXXXXXXX")" ||
+    STAGE_DIR="$(mktemp -d -- "$CONFIG_DIR/.knight-rice-install.XXXXXXXX")" ||
         die "Could not create configuration staging directory."
 
     mkdir -p -- "$STAGE_DIR/payload" "$STAGE_DIR/rollback" ||
@@ -479,7 +486,7 @@ install_configs() {
             mkdir -p -- "$DATA_DIR/dotfile-backups" ||
                 die "Could not create permanent backup directory."
 
-            BACKUP_DIR="$(mktemp -d -- "$DATA_DIR/dotfile-backups/noir-XXXXXXXX")" ||
+            BACKUP_DIR="$(mktemp -d -- "$DATA_DIR/dotfile-backups/knight-rice-XXXXXXXX")" ||
                 die "Could not create permanent backup location."
 
             chmod 700 -- "$BACKUP_DIR" ||
@@ -556,11 +563,11 @@ configure_starship_bashrc() {
     fi
 
     if ! {
-        printf '\n# >>> noir starship init >>>\n'
+        printf '\n# >>> knight-rice starship init >>>\n'
         printf 'if command -v starship >/dev/null 2>&1; then\n'
         printf '    eval "$(starship init bash)"\n'
         printf 'fi\n'
-        printf '# <<< noir starship init <<<\n'
+        printf '# <<< knight-rice starship init <<<\n'
     } >> "$BASHRC"; then
         warning "Could not update ~/.bashrc; add Starship initialization manually."
         return 0
@@ -807,24 +814,37 @@ start_awww() {
 }
 
 finish() {
-    log "09 // MISSION COMPLETE" "Installation finished."
+    printf '\n   %b────────────────────────────────────────────────────────%b\n' "$DIM" "$RESET"
+    log "COMPLETE" "knight-rice is ready."
 
-    success "Configurations deployed."
-    success "Wallpaper directory: $WALLPAPER_DIR"
+    success "Configs deployed to $CONFIG_DIR"
+    success "Wallpapers in $WALLPAPER_DIR"
+    success "Editor: $SELECTED_EDITOR"
+    [[ -n "$SELECTED_BROWSER" ]] && success "Browser: $SELECTED_BROWSER"
+    [[ -z "$BACKUP_DIR" ]] || success "Backup saved: $BACKUP_DIR"
 
-    [[ -z "$BACKUP_DIR" ]] ||
-        success "Backup: $BACKUP_DIR"
+    printf '\n  %bQUICK START%b\n' "$BOLD" "$RESET"
+    printf '    %bSUPER + Return%b   Terminal (Kitty)\n' "$ACCENT" "$RESET"
+    printf '    %bSUPER + A%b        App Launcher (Rofi)\n' "$ACCENT" "$RESET"
+    printf '    %bSUPER + W%b        Wallpaper Gallery\n' "$ACCENT" "$RESET"
+    printf '    %bSUPER + G%b        Web / YouTube Search\n' "$ACCENT" "$RESET"
+    printf '    %bSUPER + ALT + R%b  Warm Reading Mode\n' "$ACCENT" "$RESET"
+    printf '    %bSUPER + V%b        Clipboard History\n' "$ACCENT" "$RESET"
+    printf '\n  %bLog out and back into Hyprland if needed. Enjoy the focus.%b\n\n' "$STEEL" "$RESET"
+}
 
-    printf '\n  NEXT STEPS\n'
-    printf '  • Ensure your Hyprland Lua loader provides the hl API.\n'
-    printf '  • Log out and back into Hyprland if needed.\n'
-    printf '  • Open a new Bash session to load Starship.\n'
-    printf '  • SUPER + W: Wallpaper picker\n'
-    printf '  • SUPER + R: Random wallpaper\n'
-    printf '  • SUPER + V: Clipboard history\n'
-    printf '  • PRINT: Screenshot selection\n'
+show_plan() {
+    log "02 // INSTALL PLAN" "Review your configuration before making changes."
+    printf '    %bEditor:%b     %s\n' "$STEEL" "$RESET" "$SELECTED_EDITOR"
+    printf '    %bBrowser:%b    %s\n' "$STEEL" "$RESET" "${SELECTED_BROWSER:-keep existing}"
+    printf '    %bConfig:%b     %s\n' "$STEEL" "$RESET" "$CONFIG_DIR"
+    printf '    %bWallpapers:%b %s\n' "$STEEL" "$RESET" "$WALLPAPER_DIR"
+    printf '    %bSafety:%b     Automatic backup & atomic rollback on failure\n' "$STEEL" "$RESET"
 
-    printf '\n%b  THE NIGHT IS YOURS.%b\n\n' "$RED" "$RESET"
+    ask "Proceed with installation?" yes || {
+        warning "Installation cancelled cleanly. No system changes were made."
+        exit 0
+    }
 }
 
 select_preferences() {
@@ -914,6 +934,7 @@ main() {
 
     validate_environment
     select_preferences
+    show_plan
     check_official_packages
     check_aur_packages
 

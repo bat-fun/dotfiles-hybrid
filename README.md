@@ -2,88 +2,71 @@
 
 # knight-rice
 
-**Minimal, Daily-Driven Hyprland Environment**
+**Minimal, daily-driven Hyprland desktop — built for focus, speed, and calm.**
 
-`ARCH LINUX` &nbsp;·&nbsp; `HYPRLAND` &nbsp;·&nbsp; `WAYLAND`
+`Arch Linux` · `Hyprland` · `Wayland`
 
 </div>
 
-A clean, distraction-free desktop environment engineered for speed, low cognitive load, and reliable day-to-day productivity.
+---
+
+## Overview
+
+A clean, distraction-free environment tuned for everyday work: browsing, YouTube, reading, and light coding.
+
+- **Obsidian & Steel Aesthetic** — Unified dark palette across Hyprland, Waybar, Rofi, Kitty, Dunst, Wlogout, Hyprlock, and Neovim.
+- **Your Stack, Your Choice** — Pick **Neovim** or **VS Code** and **Brave**, **Firefox**, **Chromium**, or **Zen Browser** during install (or in `hypr/module/programs.lua`).
+- **Curated Wallpapers & Live Theming** — Clones [`bat-fun/wallpaper`](https://github.com/bat-fun/wallpaper) with a 3×2 Rofi gallery picker (`Super + W`) powered by `matugen`.
+- **Daily Comfort** — Media pill in Waybar, `Super + G` quick web/YouTube search (`yt <query>`), `Super + Alt + R` warm reading mode (`hyprsunset`), and scratchpad terminal (`Super + S`).
+- **Safe Installation** — Interactive installer with automatic config backups and atomic rollback if anything fails or is interrupted.
 
 ---
 
-## Highlights
-
-- **Precision Window Management**: Hyprland configured with tight 1px borders, subtle depth shading, crisp input repeat/touchpad settings, and swift animations.
-- **Unified Status Bar**: Minimalist Waybar displaying only essentials (workspaces, focused window, active media pill via MPRIS, connectivity, volume, battery, and clock/calendar).
-- **Streamlined Workflow**: Frictionless application launcher via Rofi, fast terminal scratchpad (`Super + S`), clipboard manager (`Super + V`), quick Google/YouTube search (`Super + G`, prefix `yt ` for YouTube), and instant OSD indicators.
-- **Eye Comfort & Reading**: One-keybind warm reading filter (`Super + Alt + R`) via `hyprsunset`.
-- **Cohesive Muted Palette**: Matte obsidian and steel tones synchronized across Hyprland, Waybar, Rofi, Kitty, Dunst, Wlogout, Hyprlock, and Neovim.
-- **Flexible Tooling**: Choose between **Neovim** or **VS Code** as your editor, and **Brave**, **Firefox**, **Chromium**, or **Zen Browser** during installation (or in `hypr/module/programs.lua`).
-- **Curated Wallpapers**: Clones `github.com/bat-fun/wallpaper` during install with a redesigned 3×2 Rofi gallery picker (`Super + W`) and dynamic Matugen theming.
-
----
-
-## Installation
-
-Review `install.sh`, then run:
+## Install
 
 ```bash
+git clone <your-repo-url> ~/dotfiles-hybrid
 cd ~/dotfiles-hybrid
 ./install.sh
 ```
 
-Existing configurations are automatically backed up before deployment.
+The installer walks you through choosing your editor and browser, previews the plan, backs up existing configs in `~/.config`, and rolls back cleanly on any error.
 
 ---
 
 ## Keybindings
 
-`SUPER` corresponds to the Windows/Super key.
-
 | Keys | Action |
 | :--- | :--- |
-| `SUPER + Return` | Open Terminal (Kitty) |
-| `SUPER + A` | Application Launcher (Rofi) |
-| `SUPER + E` | File Manager (Dolphin) |
-| `SUPER + B` | Web Browser (configured in `programs.lua`) |
-| `SUPER + C` | Code Editor (Neovim or VS Code) |
-| `SUPER + S` | Toggle Scratchpad Terminal |
-| `SUPER + SHIFT + S` | Send window to scratchpad |
-| `SUPER + Q` | Close focused window |
-| `SUPER + SPACE` | Toggle floating |
-| `SUPER + F` | Toggle fullscreen |
-| `SUPER + V` | Clipboard history |
-| `SUPER + SHIFT + V` | Clear clipboard history |
-| `SUPER + .` | Emoji picker |
-| `SUPER + G` | Web search (prefix `yt ` for YouTube) |
-| `SUPER + W` | Wallpaper picker |
+| `SUPER + Return` | Terminal (`kitty`) |
+| `SUPER + A` | App launcher (`rofi`) |
+| `SUPER + B` | Browser (configured in `programs.lua`) |
+| `SUPER + C` | Editor (`Neovim` or `VS Code`) |
+| `SUPER + E` | File manager (`dolphin`) |
+| `SUPER + G` | Google / YouTube search (`yt <query>`) |
+| `SUPER + W` | Wallpaper gallery picker |
 | `SUPER + R` | Random wallpaper |
 | `SUPER + ALT + R` | Toggle warm reading mode |
-| `SUPER + SHIFT + W` | Reload Waybar |
-| `SUPER + L` | Lock screen |
-| `SUPER + X` | Power / Logout menu |
-| `SUPER + M` | Exit Hyprland |
-| `PRINT` / `SHIFT + PRINT` | Screenshot region / Fullscreen |
-| `SUPER + 1` … `SUPER + 0` | Switch to workspace 1–10 |
-| `SUPER + SHIFT + 1` … `SUPER + SHIFT + 0` | Move window to workspace 1–10 |
-
-Hardware volume, mute, brightness, and media control keys are configured out of the box with Dunst OSD progress bar feedback.
+| `SUPER + S` | Toggle scratchpad terminal |
+| `SUPER + V` | Clipboard history |
+| `SUPER + L` / `X` | Lock screen / Power menu |
+| `SUPER + Q` | Close window |
+| `PRINT` | Screenshot region |
 
 ---
 
 ## Structure
 
 ```text
-dunst/         Notification daemon configuration and styling
-gtk-3.0/       GTK dark theme preferences
-hypr/          Hyprland window manager setup, bindings, and scripts
-kitty/         Terminal emulator settings and keybindings
-matugen/       Color scheme generation and templates
-nvim/          Neovim text editor configuration
-rofi/          Application launcher and gallery wallpaper picker styling
-starship.toml  Minimal shell prompt configuration
-waybar/        Status bar configuration and stylesheet
-wlogout/       Session power menu layout and style
-install.sh     Interactive backup, preference, and deployment script
+dunst/         Notification daemon & OSD bars
+gtk-3.0/       GTK dark theme defaults
+hypr/          Hyprland config, keybinds, lockscreen & scripts
+kitty/         Terminal configuration
+matugen/       Dynamic color templates
+nvim/          Neovim configuration
+rofi/          App launcher, clipboard & wallpaper gallery themes
+starship.toml  Minimal single-line prompt
+waybar/        Status bar layout & styling
+wlogout/       Session power menu
+install.sh     Interactive, rollback-safe installer
 ```
