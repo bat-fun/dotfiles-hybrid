@@ -35,6 +35,7 @@ end)
 hl.env("XCURSOR_SIZE", "16")
 hl.env("HYPRCURSOR_SIZE", "16")
 hl.env("GTK_THEME", "Adwaita:dark")
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 
 
 -----------------------
@@ -65,6 +66,9 @@ hl.config({
         rounding_power = 2,
 
         active_opacity   = 1.0,
+        inactive_opacity = 0.96,
+        dim_inactive     = true,
+        dim_strength     = 0.06,
         inactive_opacity = 0.88,
 
         shadow = {

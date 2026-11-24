@@ -11,6 +11,7 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(programs.fileManager))
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(programs.terminal))
 
 hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("~/.config/hypr/scripts/google-search"))
+hl.bind(mainMod .. " + K", hl.dsp.exec_cmd("~/.config/hypr/scripts/keybinds-help"), { description = "Keybind cheatsheet" })
 
 -- Random wallpaper & reading mode
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("~/.config/hypr/scripts/wallpaper-picker --random"))
@@ -26,7 +27,7 @@ hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2
 -- Notifications
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("dunstctl history-pop"))
 hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("dunstctl close-all"))
-hl.bind(mainMod .. " + ALT + N", hl.dsp.exec_cmd("dunstctl set-paused toggle"))
+hl.bind(mainMod .. " + ALT + N", hl.dsp.exec_cmd("~/.config/hypr/scripts/dnd-toggle"))
 hl.bind(mainMod .. " + CTRL + N", hl.dsp.exec_cmd("dunstctl context"))
 
 hl.bind(mainMod .. " + period",hl.dsp.exec_cmd("~/.config/hypr/scripts/emoji-picker"))

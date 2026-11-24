@@ -1,0 +1,205 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+ROFI_THEME="$HOME/.config/rofi/control-center.rasi"
+
+rofi_menu() {
+    local prompt="$1"
+    shift
+    printf '%s\n' "$@" | rofi -dmenu -i -p "$prompt" -theme "$ROFI_THEME" || true
+}
+
+wifi_status() {
+    if ! command -v nmcli >/dev/null 2>&1; then
+        printf 'Unavailable'
+        return
+    fi
+    if [[ "$(nmcli radio wifi 2>/dev/null || printf 'disabled')" != "enabled" ]]; then
+        printf 'Off'
+        return
+    fi
+    local ssid
+    ssid="$(nmcli -t -f active,ssid dev wifi 2>/dev/null | awk -F: '$1=="yes"{print $2; exit}')"
+    printf '%s' "${ssid:-On (disconnected)}"
+}
+
+bt_status() {
+    if ! command -v bluetoothctl >/dev/null 2>&1; then
+        printf 'Unavailable'
+        return
+    fi
+    if ! bluetoothctl show 2>/dev/null | grep -q "Powered: yes"; then
+        printf 'Off'
+        return
+    fi
+    local dev
+    dev="$(bluetoothctl devices Connected 2>/dev/null | head -n1 | cut -d' ' -f3-)"
+    printf '%s' "${dev:-On}"
+}
+
+vol_status() {
+    if command -v wpctl >/dev/null 2>&1; then
+        local out
+        out="$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null || true)"
+        if [[ "$out" == *"[MUTED]"* ]]; then
+            printf 'Muted'
+        elif [[ "$out" =~ ([0-9]+\.[0-9]+) ]]; then
+            awk -v v="${BASH_REMATCH[1]}" 'BEGIN{printf "%d%%", v*100}'
+        else
+            printf 'N/A'
+        fi
+    else
+        printf 'N/A'
+    fi
+}
+
+bright_status() {
+    if command -v brightnessctl >/dev/null 2>&1; then
+        local cur max
+        cur="$(brightnessctl get 2>/dev/null || echo 0)"
+        max="$(brightnessctl max 2>/dev/null || echo 1)"
+        awk -v c="$cur" -v m="$max" 'BEGIN{if(m>0) printf "%d%%", (c/m)*100; else print "N/A"}'
+    else
+        printf 'N/A'
+    fi
+}
+
+night_status() {
+    pgrep -x hyprsunset >/dev/null 2>&1 && printf 'On' || printf 'Off'
+}
+
+dnd_status() {
+    if command -v dunstctl >/dev/null 2>&1 && [[ "$(dunstctl is-paused 2>/dev/null)" == "true" ]]; then
+        printf 'On'
+    else
+        printf 'Off'
+    fi
+}
+
+wifi_menu() {
+    command -v nmcli >/dev/null 2>&1 || return 0
+    local state toggle_label choice
+    state="$(nmcli radio wifi 2>/dev/null || printf 'disabled')"
+    toggle_label=$([[ "$state" == "enabled" ]] && echo "󰤮  Turn Wi-Fi Off" || echo "󰤨  Turn Wi-Fi On")
+
+    local -a items=("←  Back" "$toggle_label")
+    if [[ "$state" == "enabled" ]]; then
+        while IFS= read -r line; do
+            [[ -n "$line" ]] && items+=("󰤨  $line")
+        done < <(nmcli -t -f ssid,signal dev wifi list --rescan no 2>/dev/null | awk -F: 'NF && $1!="" && !seen[$1]++ {printf "%s (%s%%)\n", $1, $2}' | head -n 12)
+    fi
+
+    choice="$(rofi_menu "󰤨 " "${items[@]}")"
+    case "$choice" in
+        ""|"←  Back") return 0 ;;
+        "󰤮  Turn Wi-Fi Off") nmcli radio wifi off ;;
+        "󰤨  Turn Wi-Fi On") nmcli radio wifi on ;;
+        󰤨*)
+            local ssid="${choice#󰤨  }"
+            ssid="${ssid% (*}"
+            nmcli dev wifi connect "$ssid" >/dev/null 2>&1 || nm-connection-editor >/dev/null 2>&1 &
+            ;;
+    esac
+}
+
+bluetooth_menu() {
+    command -v bluetoothctl >/dev/null 2>&1 || return 0
+    local powered toggle_label choice
+    powered="$(bluetoothctl show 2>/dev/null | grep -q "Powered: yes" && echo yes || echo no)"
+    toggle_label=$([[ "$powered" == "yes" ]] && echo "󰂲  Turn Bluetooth Off" || echo "󰂯  Turn Bluetooth On")
+
+    local -a items=("←  Back" "$toggle_label" "󰂱  Open Bluetooth Manager")
+    if [[ "$powered" == "yes" ]]; then
+        while IFS= read -r dev; do
+            [[ -n "$dev" ]] && items+=("󰂯  $dev")
+        done < <(bluetoothctl devices Paired 2>/dev/null | cut -d' ' -f2-)
+    fi
+
+    choice="$(rofi_menu "󰂯 " "${items[@]}")"
+    case "$choice" in
+        ""|"←  Back") return 0 ;;
+        "󰂲  Turn Bluetooth Off") bluetoothctl power off >/dev/null ;;
+        "󰂯  Turn Bluetooth On") bluetoothctl power on >/dev/null ;;
+        "󰂱  Open Bluetooth Manager") blueman-manager >/dev/null 2>&1 & ;;
+        󰂯*)
+            local mac="${choice#󰂯  }"
+            mac="${mac%% *}"
+            if bluetoothctl info "$mac" 2>/dev/null | grep -q "Connected: yes"; then
+                bluetoothctl disconnect "$mac" >/dev/null || true
+            else
+                bluetoothctl connect "$mac" >/dev/null || true
+            fi
+            ;;
+    esac
+}
+
+volume_menu() {
+    local choice
+    choice="$(rofi_menu "󰕾 " \
+        "←  Back" \
+        "󰝟  Toggle Mute" \
+        "󰕾  Volume +10%" \
+        "󰖀  Volume -10%" \
+        "󰕾  Volume 50%" \
+        "󰕾  Volume 100%" \
+        "󰒓  Open Audio Mixer")"
+    case "$choice" in
+        "󰝟  Toggle Mute") ~/.config/hypr/scripts/osd volume mute ;;
+        "󰕾  Volume +10%") ~/.config/hypr/scripts/osd volume up ;;
+        "󰖀  Volume -10%") ~/.config/hypr/scripts/osd volume down ;;
+        "󰕾  Volume 50%") wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.50 ;;
+        "󰕾  Volume 100%") wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.00 ;;
+        "󰒓  Open Audio Mixer") pavucontrol >/dev/null 2>&1 & ;;
+    esac
+}
+
+brightness_menu() {
+    command -v brightnessctl >/dev/null 2>&1 || return 0
+    local choice
+    choice="$(rofi_menu "󰃟 " \
+        "←  Back" \
+        "󰃠  Brightness +10%" \
+        "󰃞  Brightness -10%" \
+        "󰃟  25%" \
+        "󰃟  50%" \
+        "󰃟  75%" \
+        "󰃠  100%")"
+    case "$choice" in
+        "󰃠  Brightness +10%") ~/.config/hypr/scripts/osd brightness up ;;
+        "󰃞  Brightness -10%") ~/.config/hypr/scripts/osd brightness down ;;
+        "󰃟  25%") brightnessctl set 25% >/dev/null ;;
+        "󰃟  50%") brightnessctl set 50% >/dev/null ;;
+        "󰃟  75%") brightnessctl set 75% >/dev/null ;;
+        "󰃠  100%") brightnessctl set 100% >/dev/null ;;
+    esac
+}
+
+case "${1:-}" in
+    --wifi) wifi_menu; exit 0 ;;
+    --bluetooth) bluetooth_menu; exit 0 ;;
+    --volume) volume_menu; exit 0 ;;
+    --brightness) brightness_menu; exit 0 ;;
+esac
+
+while true; do
+    choice="$(rofi_menu "󰒓 " \
+        "󰤨  Wi-Fi          ·  $(wifi_status)" \
+        "󰂯  Bluetooth      ·  $(bt_status)" \
+        "󰕾  Volume         ·  $(vol_status)" \
+        "󰃟  Brightness     ·  $(bright_status)" \
+        "󰖔  Night Light    ·  $(night_status)" \
+        "󰂛  Do Not Disturb ·  $(dnd_status)" \
+        "󰐥  Power Menu")"
+
+    [[ -z "$choice" ]] && break
+
+    case "$choice" in
+        󰤨*) wifi_menu ;;
+        󰂯*) bluetooth_menu ;;
+        󰕾*) volume_menu ;;
+        󰃟*) brightness_menu ;;
+        󰖔*) ~/.config/hypr/scripts/night-light ;;
+        󰂛*) ~/.config/hypr/scripts/dnd-toggle ;;
+        󰐥*) wlogout >/dev/null 2>&1 & break ;;
+    esac
+done

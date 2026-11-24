@@ -9,8 +9,10 @@
     "network",
     "bluetooth",
     "pulseaudio",
+    "backlight",
     "battery",
-    "clock"
+    "clock",
+    "custom/control"
   ],
 
   "custom/launcher": {
@@ -68,7 +70,8 @@
     "format-linked": "󱚵 Linked",
     "format-disconnected": "󰤮 Disconnected",
     "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
-    "on-click": "nm-connection-editor"
+    "on-click": "~/.config/hypr/scripts/control-center --wifi",
+    "on-click-right": "nm-connection-editor"
   },
 
   "bluetooth": {
@@ -78,7 +81,8 @@
     "tooltip-format": "{controller_alias}\t{controller_address}",
     "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-    "on-click": "blueman-manager"
+    "on-click": "~/.config/hypr/scripts/control-center --bluetooth",
+    "on-click-right": "blueman-manager"
   },
 
   "pulseaudio": {
@@ -88,8 +92,23 @@
       "default": ["󰕿", "󰖀", "󰕾"]
     },
     "scroll-step": 3,
-    "on-click": "pavucontrol",
+    "on-click": "~/.config/hypr/scripts/control-center --volume",
     "on-click-right": "~/.config/hypr/scripts/osd volume mute"
+  },
+
+  "backlight": {
+    "format": "{icon} {percent}%",
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "on-scroll-up": "~/.config/hypr/scripts/osd brightness up",
+    "on-scroll-down": "~/.config/hypr/scripts/osd brightness down",
+    "on-click": "~/.config/hypr/scripts/control-center --brightness"
+  },
+
+  "custom/control": {
+    "format": "󰒓",
+    "tooltip": true,
+    "tooltip-format": "Quick Settings",
+    "on-click": "~/.config/hypr/scripts/control-center"
   },
 
   "battery": {
@@ -106,6 +125,8 @@
   "clock": {
     "format": "{:%a %b %d  %H:%M}",
     "format-alt": "{:%Y-%m-%d  %H:%M:%S}",
+    "on-click-right": "~/.config/hypr/scripts/night-light",
+    "on-click-middle": "~/.config/hypr/scripts/dnd-toggle",
     "tooltip-format": "<tt><small>{calendar}</small></tt>",
     "calendar": {
       "mode": "month",

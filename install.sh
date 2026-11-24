@@ -22,20 +22,21 @@ SELECTED_EDITOR="kitty -e nvim"
 SELECTED_BROWSER="brave"
 
 CONFIG_PATHS=(
-    dunst gtk-3.0 gtk-4.0 hypr kitty matugen nvim rofi waybar wlogout starship.toml
+    dunst gtk-3.0 gtk-4.0 hypr kitty matugen nvim qt6ct rofi waybar wlogout starship.toml
 )
 
 PACKAGES=(
     xdg-desktop-portal
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
-    hyprland hyprlock hyprsunset waybar rofi rofimoji kitty dunst awww zsh
+    hyprland hyprlock hyprsunset waybar rofi rofimoji kitty dunst awww
+    zsh zsh-autosuggestions zsh-syntax-highlighting
     networkmanager network-manager-applet nm-connection-editor
     bluez bluez-utils blueman
     pipewire pipewire-pulse wireplumber pavucontrol
     wl-clipboard cliphist matugen starship
     grim slurp brightnessctl playerctl libnotify
-    dolphin python python-pillow
+    dolphin qt6ct python python-pillow
     noto-fonts noto-fonts-emoji
     ttf-jetbrains-mono-nerd ttf-font-awesome
     adwaita-icon-theme
@@ -546,6 +547,7 @@ install_configs() {
     DEPLOYMENT_ACTIVE=0
     TRANSACTION_PATHS=()
     ORIGINAL_PATH_EXISTS=()
+    chmod +x "$CONFIG_DIR/hypr/scripts/"* 2>/dev/null || true
     success "Configuration deployment completed."
 }
 
@@ -827,8 +829,10 @@ finish() {
     printf '    %bSUPER + Return%b   Terminal (Kitty)\n' "$ACCENT" "$RESET"
     printf '    %bSUPER + A%b        App Launcher (Rofi)\n' "$ACCENT" "$RESET"
     printf '    %bSUPER + W%b        Wallpaper Gallery\n' "$ACCENT" "$RESET"
+    printf '    %bSUPER + K%b        Keybind Cheatsheet\n' "$ACCENT" "$RESET"
     printf '    %bSUPER + G%b        Web / YouTube Search\n' "$ACCENT" "$RESET"
     printf '    %bSUPER + ALT + R%b  Warm Reading Mode\n' "$ACCENT" "$RESET"
+    printf '    %bSUPER + ALT + N%b  Do Not Disturb\n' "$ACCENT" "$RESET"
     printf '    %bSUPER + V%b        Clipboard History\n' "$ACCENT" "$RESET"
     printf '\n  %bLog out and back into Hyprland if needed. Enjoy the focus.%b\n\n' "$STEEL" "$RESET"
 }
@@ -951,6 +955,50 @@ configure_zsh() {
     fi
 }
 
+configure_sddm() {
+    local theme_src="$ROOT_DIR/sddm/knight-sddm"
+    local theme_dst="/usr/share/sddm/themes/knight-sddm"
+    local sddm_cache="/var/tmp/knight-sddm"
+
+    [[ -d "$theme_src" ]] || return 0
+
+    log "07 // LOGIN SCREEN" "Optional minimal SDDM login theme."
+    ask "Install and enable the knight-sddm login theme?" yes || {
+        warning "Skipping SDDM setup."
+        return 0
+    }
+
+    command -v sudo >/dev/null 2>&1 || {
+        warning "sudo unavailable; skipping SDDM setup."
+        return 0
+    }
+
+    sudo pacman -S --needed sddm qt6-5compat || {
+        warning "Could not install sddm/qt6-5compat; skipping SDDM setup."
+        return 0
+    }
+
+    sudo mkdir -p /usr/share/sddm/themes /etc/sddm.conf.d "$sddm_cache"
+    sudo rm -rf -- "$theme_dst"
+    sudo cp -a -- "$theme_src" "$theme_dst"
+    printf '[Theme]\nCurrent=knight-sddm\n' | sudo tee /etc/sddm.conf.d/10-knight.conf >/dev/null
+
+    sudo chown "$USER" "$sddm_cache"
+    chmod 755 "$sddm_cache"
+    if [[ -n "${SELECTED_WALLPAPER:-}" && -f "$SELECTED_WALLPAPER" ]]; then
+        cp -f -- "$SELECTED_WALLPAPER" "$sddm_cache/wallpaper"
+        chmod 644 "$sddm_cache/wallpaper"
+    fi
+
+    if command -v systemctl >/dev/null 2>&1; then
+        if ! systemctl is-enabled sddm.service >/dev/null 2>&1; then
+            sudo systemctl enable sddm.service || warning "Could not enable sddm.service automatically."
+        fi
+    fi
+
+    success "SDDM theme configured (knight-sddm)."
+}
+
 configure_dark_mode() {
     if command -v gsettings >/dev/null 2>&1; then
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
@@ -996,6 +1044,7 @@ main() {
     fetch_wallpapers
     choose_wallpaper
     generate_colors
+    configure_sddm
 
     start_services
     start_awww

@@ -1,0 +1,84 @@
+@import "~/.config/rofi/colors.rasi"
+
+configuration {
+    show-icons: false;
+    font: "JetBrainsMono Nerd Font 10";
+}
+
+* {
+    background-color: transparent;
+    text-color: @on-surface;
+}
+
+window {
+    location: northeast;
+    anchor: northeast;
+    x-offset: -8;
+    y-offset: 46;
+    width: 320px;
+    background-color: @surface;
+    border: 1px solid @outline;
+    border-radius: 12px;
+    padding: 14px;
+}
+
+mainbox {
+    orientation: vertical;
+    spacing: 10px;
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    background-color: @surface-container;
+    border: 1px solid @outline;
+    border-radius: 8px;
+    padding: 7px 12px;
+    spacing: 8px;
+    children: [ prompt, entry ];
+}
+
+prompt {
+    text-color: @primary;
+    font: "JetBrainsMono Nerd Font 11";
+    vertical-align: 0.5;
+}
+
+entry {
+    placeholder: "Quick Settings...";
+    placeholder-color: @on-surface-variant;
+    text-color: @on-surface;
+    vertical-align: 0.5;
+}
+
+listview {
+    lines: 8;
+    columns: 1;
+    fixed-height: false;
+    dynamic: true;
+    scrollbar: false;
+    spacing: 6px;
+}
+
+element {
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background-color: @surface-container;
+}
+
+element normal.normal,
+element alternate.normal {
+    background-color: @surface-container;
+    text-color: @on-surface-variant;
+}
+
+element selected.normal {
+    background-color: @surface-container-high;
+    border-color: @primary;
+    text-color: @on-surface;
+}
+
+element-text {
+    text-color: inherit;
+    vertical-align: 0.5;
+}

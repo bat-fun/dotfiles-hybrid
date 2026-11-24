@@ -50,6 +50,16 @@ alias v='nvim'
 alias ..='cd ..'
 alias ...='cd ../..'
 
+# --- Plugins (Arch official packages, optional) ---
+if [[ -r /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+    source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#6e6d68'
+fi
+
+if [[ -r /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
 # --- Prompt ---
 if command -v starship >/dev/null 2>&1; then
     eval "$(starship init zsh)"

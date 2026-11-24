@@ -144,6 +144,11 @@ apply_wallpaper() {
     mkdir -p -- "$(dirname -- "$CACHE_FILE")"
     printf '%s\n' "$wallpaper" > "$CACHE_FILE"
 
+    if [[ -d /var/tmp/knight-sddm && -w /var/tmp/knight-sddm ]]; then
+        cp -f -- "$wallpaper" /var/tmp/knight-sddm/wallpaper 2>/dev/null || true
+        chmod 644 /var/tmp/knight-sddm/wallpaper 2>/dev/null || true
+    fi
+
     if [[ "$quiet" != "true" ]]; then
         notify \
             -t 1800 \

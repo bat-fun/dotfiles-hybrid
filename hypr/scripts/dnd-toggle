@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+if ! command -v dunstctl >/dev/null 2>&1; then
+    exit 0
+fi
+
+paused="$(dunstctl is-paused 2>/dev/null || printf 'false')"
+
+if [[ "$paused" == "true" ]]; then
+    dunstctl set-paused false
+    notify-send -t 1600 -u low "Notifications" "Resumed"
+else
+    notify-send -t 1400 -u low "Notifications" "Do Not Disturb enabled"
+    sleep 0.2
+    dunstctl set-paused true
+fi

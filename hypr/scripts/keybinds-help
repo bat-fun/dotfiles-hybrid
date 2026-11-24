@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+entries=(
+    "SUPER + Return        │ Terminal (Kitty)"
+    "SUPER + A             │ App Launcher (Rofi)"
+    "SUPER + B             │ Browser"
+    "SUPER + C             │ Editor (Neovim / VS Code)"
+    "SUPER + E             │ File Manager (Dolphin)"
+    "SUPER + G             │ Web / YouTube Search (yt <query>)"
+    "SUPER + W             │ Wallpaper Gallery Picker"
+    "SUPER + R             │ Random Wallpaper"
+    "SUPER + ALT + R       │ Toggle Warm Reading Mode"
+    "SUPER + ALT + N       │ Toggle Do Not Disturb"
+    "SUPER + S             │ Toggle Scratchpad Terminal"
+    "SUPER + SHIFT + S     │ Send Window to Scratchpad"
+    "SUPER + V             │ Clipboard History"
+    "SUPER + SHIFT + V     │ Clear Clipboard History"
+    "SUPER + .             │ Emoji Picker"
+    "SUPER + F             │ Fullscreen"
+    "SUPER + SPACE         │ Toggle Floating"
+    "SUPER + Q             │ Close Window"
+    "SUPER + L             │ Lock Screen"
+    "SUPER + X             │ Power / Logout Menu"
+    "SUPER + SHIFT + W     │ Reload Waybar"
+    "PRINT                 │ Screenshot Region"
+    "SHIFT + PRINT         │ Screenshot Fullscreen"
+)
+
+printf '%s\n' "${entries[@]}" | rofi -dmenu -i -p "󰌌 " -theme ~/.config/rofi/config.rasi >/dev/null || true

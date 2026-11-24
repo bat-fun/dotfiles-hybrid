@@ -1,0 +1,10 @@
+[SddmGreeterTheme]
+Name=knight-sddm
+Description=Minimal obsidian SDDM theme
+Author=knight-rice
+License=MIT
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+QtVersion=6
