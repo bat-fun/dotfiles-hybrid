@@ -89,8 +89,8 @@ local function toggle_scratchpad()
                 float = true,
                 center = true,
                 size = {
-                    "monitor_w * 0.30",
-                    "monitor_h * 0.60",
+                    "monitor_w * 0.60",
+                    "monitor_h * 0.50",
                 },
             }
         )

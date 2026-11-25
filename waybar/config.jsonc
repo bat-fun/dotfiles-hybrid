@@ -12,9 +12,9 @@
   "modules-right": ["clock", "custom/control"],
 
   "custom/launcher": {
-    "format": "󰣇",
+    "format": "",
     "tooltip": true,
-    "tooltip-format": "Applications (Super + A)",
+    "tooltip-format": "Applications  ·  Super + A",
     "cursor": true,
     "on-click": "rofi -show drun -theme ~/.config/rofi/config.rasi"
   },
@@ -64,9 +64,10 @@
   },
 
   "clock": {
-    "format": "{:%a %b %d  %H:%M}",
-    "format-alt": "{:%Y-%m-%d  %H:%M:%S}",
+    "format": "{:%a %b %d  ·  %I:%M %p}",
+    "format-alt": "{:%Y-%m-%d  ·  %I:%M:%S %p}",
     "cursor": true,
+    "tooltip": true,
     "tooltip-format": "<tt><small>{calendar}</small></tt>",
     "calendar": {
       "mode": "month",
@@ -74,10 +75,10 @@
       "weeks-pos": "right",
       "on-scroll": 1,
       "format": {
-        "months": "<span color='#c7c7bc'><b>{}</b></span>",
-        "days": "<span color='#e5e2e0'>{}</span>",
+        "months": "<span color='#e5e2e0'><b>{}</b></span>",
+        "days": "<span color='#c7c7be'>{}</span>",
         "weeks": "<span color='#919189'>W{}</span>",
-        "weekdays": "<span color='#c7c7be'><b>{}</b></span>",
+        "weekdays": "<span color='#c7c7bc'><b>{}</b></span>",
         "today": "<span color='#ffb4ab'><b><u>{}</u></b></span>"
       }
     }

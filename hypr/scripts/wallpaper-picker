@@ -214,14 +214,14 @@ SELECTED=$(for wallpaper in "${OPTIONS[@]}"; do
     esac
     if [ "$wallpaper" = "Random" ]; then
         printf '%s\0icon\x1f%s\0display\x1f%s\n' \
-            "$wallpaper" "preferences-desktop-wallpaper" "Random wallpaper"
+            "$wallpaper" "media-playlist-shuffle" "✦  Random Wallpaper"
     else
         label="${wallpaper%.*}"
         label="${label//-/ }"
         label="${label//_/ }"
         display="$label"
         if [[ "$CURRENT_WALLPAPER" == "$WALLPAPER_DIR/$wallpaper" ]]; then
-            display="✓ $label"
+            display="● $label"
         fi
         printf '%s\0icon\x1f%s\0display\x1f%s\n' \
             "$wallpaper" "$WALLPAPER_DIR/$wallpaper" "$display"

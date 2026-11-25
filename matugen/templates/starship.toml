@@ -1,54 +1,38 @@
-"$schema" = 'https://starship.rs/config-schema.json'
-palette = 'matugen'
+format = """
+$username$directory $git_branch$git_status
+$character
+"""
 
+command_timeout = 5001
 add_newline = false
-scan_timeout = 30
-command_timeout = 800
+palette = "quickshell"
 
-format = """$directory$git_branch$git_status$cmd_duration$character"""
+[username]
+style_user = "fg:bg bold bg:accent bold"
+style_root = "bg bold"
+format = "[](bold fg:accent)[$user]($style)[ ](bold fg:accent)"
+disabled = false
+show_always = true
 
 [directory]
-style = "bold #e5e2e0"
-format = "[$path]($style)[$read_only]($read_only_style) "
-home_symbol = "~"
-truncation_length = 3
-truncation_symbol = "…/"
-read_only = " "
-
-[git_branch]
-symbol = "󰘬 "
-format = "[$symbol$branch]($style) "
-style = "bold {{colors.primary.dark.hex}}"
-truncation_length = 24
-truncation_symbol = "…"
-only_attached = true
-
-[git_status]
-format = '([\[$all_status$ahead_behind\]]($style) )'
-style = "bold {{colors.outline.dark.hex}}"
-conflicted = "󰀨"
-ahead = "⇡${count}"
-behind = "⇣${count}"
-diverged = "⇕⇡${ahead_count}⇣${behind_count}"
-untracked = "?"
-modified = "!"
-staged = "+"
-renamed = "»"
-deleted = "✘"
+style = "bg:accent fg:bg"
+format = '󰜥 [](bold fg:accent)[󰉋 $path]($style)[](bold fg:accent)'
 
 [character]
-format = "$symbol "
-success_symbol = "[❯](bold {{colors.primary.dark.hex}})"
-error_symbol = "[❯](bold {{colors.error.dark.hex}})"
-vimcmd_symbol = "[❮](bold {{colors.outline.dark.hex}})"
+success_symbol = "[](bold fg:accent)"
+error_symbol = "[](bold fg:accentComplementary)"
 
-[cmd_duration]
-min_time = 2_000
-format = "[$duration]($style) "
-style = "dimmed {{colors.outline.dark.hex}}"
+[git_branch]
+style = "bg: accent"
+symbol = "󰘬"
+truncation_length = 13
+truncation_symbol = ""
+format = "[](bold fg:accent)[$symbol $branch(:$remote_branch)](fg:bg bg:accent)[ ](bold fg:accent)"
 
-[palettes.matugen]
-primary = "{{colors.primary.dark.hex}}"
-secondary = "{{colors.secondary.dark.hex}}"
-tertiary = "{{colors.tertiary.dark.hex}}"
-error = "{{colors.error.dark.hex}}"
+# --- Quickshell Palette ---
+[palettes.quickshell]
+bg = "{{colors.background.dark.hex}}"
+fg = "{{colors.on_background.dark.hex}}"
+accent = "{{colors.primary.dark.hex}}"
+accentComplementary = "{{colors.tertiary.dark.hex}}"
+accentcomplementary = "{{colors.tertiary.dark.hex}}"

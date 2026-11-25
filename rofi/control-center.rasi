@@ -34,14 +34,14 @@ window {
     background-color: @bg;
     border: 1px;
     border-color: @outline;
-    border-radius: 14px;
-    padding: 12px;
+    border-radius: 16px;
+    padding: 14px;
     cursor: "default";
 }
 
 mainbox {
     orientation: vertical;
-    spacing: 10px;
+    spacing: 12px;
     background-color: transparent;
     children: [ inputbar, listview ];
 }
@@ -50,8 +50,8 @@ inputbar {
     background-color: @surface;
     border: 1px;
     border-color: @outline;
-    border-radius: 10px;
-    padding: 8px 12px;
+    border-radius: 12px;
+    padding: 9px 14px;
     spacing: 8px;
     children: [ prompt, entry ];
 }

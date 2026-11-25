@@ -1,54 +1,38 @@
-"$schema" = 'https://starship.rs/config-schema.json'
-palette = 'matugen'
+format = """
+$username$directory $git_branch$git_status
+$character
+"""
 
+command_timeout = 5001
 add_newline = false
-scan_timeout = 30
-command_timeout = 800
+palette = "quickshell"
 
-format = """$directory$git_branch$git_status$cmd_duration$character"""
+[username]
+style_user = "fg:bg bold bg:accent bold"
+style_root = "bg bold"
+format = "[](bold fg:accent)[$user]($style)[ ](bold fg:accent)"
+disabled = false
+show_always = true
 
 [directory]
-style = "bold #e5e2e0"
-format = "[$path]($style)[$read_only]($read_only_style) "
-home_symbol = "~"
-truncation_length = 3
-truncation_symbol = "…/"
-read_only = " "
-
-[git_branch]
-symbol = "󰘬 "
-format = "[$symbol$branch]($style) "
-style = "bold #c7c7bc"
-truncation_length = 24
-truncation_symbol = "…"
-only_attached = true
-
-[git_status]
-format = '([\[$all_status$ahead_behind\]]($style) )'
-style = "bold #919189"
-conflicted = "󰀨"
-ahead = "⇡${count}"
-behind = "⇣${count}"
-diverged = "⇕⇡${ahead_count}⇣${behind_count}"
-untracked = "?"
-modified = "!"
-staged = "+"
-renamed = "»"
-deleted = "✘"
+style = "bg:accent fg:bg"
+format = '󰜥 [](bold fg:accent)[󰉋 $path]($style)[](bold fg:accent)'
 
 [character]
-format = "$symbol "
-success_symbol = "[❯](bold #c7c7bc)"
-error_symbol = "[❯](bold #ffb4ab)"
-vimcmd_symbol = "[❮](bold #919189)"
+success_symbol = "[](bold fg:accent)"
+error_symbol = "[](bold fg:accentComplementary)"
 
-[cmd_duration]
-min_time = 2_000
-format = "[$duration]($style) "
-style = "dimmed #919189"
+[git_branch]
+style = "bg: accent"
+symbol = "󰘬"
+truncation_length = 13
+truncation_symbol = ""
+format = "[](bold fg:accent)[$symbol $branch(:$remote_branch)](fg:bg bg:accent)[ ](bold fg:accent)"
 
-[palettes.matugen]
-primary = "#c7c7bc"
-secondary = "#c8c6c1"
-tertiary = "#d0c3c9"
-error = "#ffb4ab"
+# --- Quickshell Palette ---
+[palettes.quickshell]
+bg = "#141312"
+fg = "#e5e2e0"
+accent = "#c7c7bc"
+accentComplementary = "#d0c3c9"
+accentcomplementary = "#d0c3c9"

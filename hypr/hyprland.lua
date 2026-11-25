@@ -46,12 +46,12 @@ hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 hl.config({
     general = {
         gaps_in  = 5,
-        gaps_out = {top=4, right=8, left=8, bottom=8},
+        gaps_out = {top=4, right=8, left=8, bottom=4},
 
         border_size = 1,
 
         col = {
-            active_border   = "rgba(c7c7bcee) rgba(464741aa) 45deg",
+            active_border   = {colors = {"rgba(c7c7bcee)", "rgba(464741aa)"}, angle = 45},
             inactive_border = "rgba(141312cc)",
         },
 
@@ -210,8 +210,8 @@ hl.window_rule({
     float = true,
 
     size = {
-        "monitor_w * 0.50",
-        "monitor_h * 0.70",
+        "monitor_w * 0.60",
+        "monitor_h * 0.50",
     },
 
     rounding = 12,

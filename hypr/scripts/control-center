@@ -133,12 +133,14 @@ print_waybar_status() {
     tooltip+="Night Light: ${night}  ·  DND: ${dnd}"$'\n'
     tooltip+=$'\n'"Click: Quick Settings  ·  Right-click: DND"
 
+    local icon=""
     if [[ "$dnd" == "On" ]]; then
         cls="dnd"
+        icon="  󰂛"
     fi
 
-    printf '{"text":"󰒓","tooltip":"%s","class":"%s"}\n' \
-        "$(json_escape "$tooltip")" "$cls"
+    printf '{"text":"%s","tooltip":"%s","class":"%s"}\n' \
+        "$icon" "$(json_escape "$tooltip")" "$cls"
 }
 
 wifi_menu() {
@@ -305,7 +307,7 @@ while true; do
         "󰐥  Power Menu"
     )
 
-    choice="$(rofi_menu "󰒓 " "${menu_items[@]}")"
+    choice="$(rofi_menu " " "${menu_items[@]}")"
 
     [[ -z "$choice" ]] && break
 
