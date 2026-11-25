@@ -31,15 +31,15 @@ window {
     enabled: true;
     border: 1px;
     border-color: @noir-outline;
-    border-radius: 14px;
+    border-radius: 16px;
     background-color: @bg;
-    padding: 12px 14px;
+    padding: 14px 16px;
     cursor: "default";
 }
 
 mainbox {
     enabled: true;
-    spacing: 10px;
+    spacing: 12px;
     background-color: transparent;
     children: [ inputbar, listview ];
 }
@@ -47,11 +47,11 @@ mainbox {
 /* ── CLIPBOARD SEARCHBAR ──────────────────────────────── */
 inputbar {
     enabled: true;
-    spacing: 8px;
-    padding: 8px 12px;
+    spacing: 10px;
+    padding: 10px 14px;
     border: 1px;
     border-color: @noir-outline;
-    border-radius: 10px;
+    border-radius: 12px;
     background-color: @surface;
     text-color: @text;
     children: [ prompt, entry ];
@@ -92,8 +92,8 @@ listview {
 element {
     enabled: true;
     spacing: 8px;
-    padding: 7px 10px;
-    border-radius: 7px;
+    padding: 8px 10px;
+    border-radius: 10px;
     background-color: transparent;
     text-color: @muted;
     cursor: pointer;

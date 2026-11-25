@@ -42,7 +42,7 @@ PACKAGES=(
     adwaita-icon-theme
 )
 
-AUR_PACKAGES=(wlogout)
+AUR_PACKAGES=(wlogout bibata-cursor-theme-bin)
 
 BACKUP_DIR=""
 STAGE_DIR=""

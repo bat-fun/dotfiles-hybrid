@@ -25,7 +25,7 @@ hl.animation({
     enabled = true,
     speed = 4,
     bezier = "smooth",
-    style = "popin 94%",
+    style = "popin 92%",
 })
 
 hl.animation({
@@ -64,7 +64,7 @@ hl.animation({
     enabled = true,
     speed = 3,
     bezier = "smooth",
-    style = "fade",
+    style = "popin 94%",
 })
 
 -- Workspaces
@@ -73,7 +73,7 @@ hl.animation({
     enabled = true,
     speed = 4,
     bezier = "smooth",
-    style = "slidefade 18%",
+    style = "slidefade 16%",
 })
 
 

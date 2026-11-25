@@ -22,7 +22,8 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("nm-applet")
     hl.exec_cmd("dunst")
     hl.exec_cmd("command -v hyprpolkitagent >/dev/null 2>&1 && hyprpolkitagent")
-    hl.exec_cmd("command -v gsettings >/dev/null 2>&1 && gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' && gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'")
+    hl.exec_cmd("command -v gsettings >/dev/null 2>&1 && gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' && gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark' && gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic' && gsettings set org.gnome.desktop.interface cursor-size 24")
+    hl.exec_cmd("hyprctl setcursor Bibata-Modern-Classic 24")
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
     hl.exec_cmd("~/.config/hypr/scripts/wallpaper-picker --restore")
@@ -33,8 +34,10 @@ end)
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
 
-hl.env("XCURSOR_SIZE", "16")
-hl.env("HYPRCURSOR_SIZE", "16")
+hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
+hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Classic")
 hl.env("GTK_THEME", "Adwaita:dark")
 hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 
@@ -45,8 +48,8 @@ hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 
 hl.config({
     general = {
-        gaps_in  = 5,
-        gaps_out = {top=4, right=8, left=8, bottom=4},
+        gaps_in  = 6,
+        gaps_out = {top=6, right=10, left=10, bottom=8},
 
         border_size = 1,
 
@@ -63,27 +66,28 @@ hl.config({
     },
 
     decoration = {
-        rounding       = 8,
-        rounding_power = 2,
+        rounding       = 12,
+        rounding_power = 2.5,
 
         active_opacity   = 1.0,
-        inactive_opacity = 0.88,
+        inactive_opacity = 0.92,
         dim_inactive     = true,
-        dim_strength     = 0.06,
+        dim_strength     = 0.05,
 
         shadow = {
             enabled      = true,
-            range        = 12,
+            range        = 18,
             render_power = 3,
-            color        = 0x66000000,
+            color        = 0x77000000,
         },
 
         blur = {
-            enabled   = true,
-            size      = 6,
-            passes    = 2,
-            vibrancy  = 0.18,
-            new_optimizations = true
+            enabled           = true,
+            size              = 8,
+            passes            = 3,
+            vibrancy          = 0.22,
+            ignore_opacity    = true,
+            new_optimizations = true,
         },
     },
 
@@ -135,6 +139,11 @@ hl.config({
         force_default_wallpaper = 1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
         disable_hyprland_logo   = true, -- If true disables the random hyprland logo / anime girl background. :(
 	    disable_splash_rendering = true,
+    },
+    cursor = {
+        inactive_timeout = 5,
+        warp_on_change_workspace = true,
+        no_warps = false,
     },
 })
 

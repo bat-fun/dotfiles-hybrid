@@ -13,15 +13,15 @@ button {
     background-color: alpha({{colors.surface_container_lowest.dark.hex}}, 0.94);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 52px;
+    background-size: 56px;
     border: 1px solid {{colors.outline_variant.dark.hex}};
-    border-radius: 14px;
-    box-shadow: none;
-    margin: 8px;
-    min-width: 148px;
-    min-height: 116px;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    margin: 10px;
+    min-width: 156px;
+    min-height: 124px;
     padding: 18px;
-    transition: background-color 160ms ease, border-color 160ms ease;
+    transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
 #lock { background-image: image(url("/usr/share/wlogout/icons/lock.png")); }
@@ -34,7 +34,8 @@ button {
 button:hover,
 button:focus {
     background-color: alpha({{colors.surface_container_high.dark.hex}}, 0.98);
-    border-color: {{colors.primary.dark.hex}};
+    border: 2px solid {{colors.primary.dark.hex}};
+    box-shadow: 0 8px 24px alpha({{colors.primary.dark.hex}}, 0.22);
 }
 
 button:active {
